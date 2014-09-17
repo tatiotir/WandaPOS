@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Sun Sep 14 15:40:09 WAT 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-0148-749b-5238-000004a0e2e0 
+on database directory C:\Users\TATIOTI-IDEAPAD\unicentaopos-database  with class loader sun.misc.Launcher$AppClassLoader@dbe996d 
+Loaded from file:/D:/IT-Kamer%20Project/uniCenta_oPOS_3.70/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_40-b43
+user.dir=D:\IT-Kamer Project\uniCenta_oPOS_3.70
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
