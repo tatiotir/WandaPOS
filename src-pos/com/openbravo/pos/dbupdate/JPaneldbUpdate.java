@@ -1,21 +1,21 @@
-//    uniCenta oPOS  - Touch Friendly Point Of Sale
+//    WandaPos  - Touch Friendly Point Of Sale
 //    Copyright (c) 2009-2014 uniCenta & previous Openbravo POS works
 //    http://www.unicenta.com
 //
-//    This file is part of uniCenta oPOS
+//    This file is part of WandaPos
 //
-//    uniCenta oPOS is free software: you can redistribute it and/or modify
+//    WandaPos is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
 //    the Free Software Foundation, either version 3 of the License, or
 //    (at your option) any later version.
 //
-//   uniCenta oPOS is distributed in the hope that it will be useful,
+//   WandaPos is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //    GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License
-//    along with uniCenta oPOS.  If not, see <http://www.gnu.org/licenses/>.
+//    along with WandaPos.  If not, see <http://www.gnu.org/licenses/>.
 
 package com.openbravo.pos.dbupdate;
 
@@ -64,7 +64,7 @@ public class JPaneldbUpdate extends JPanel implements JPanelView {
         config = new AppConfig(props.getConfigFile());      
         m_props=props;
      
- /*       jMessageBox.setText("This updater is for version 3.02 of Unicenta oPOS. \n\n"
+ /*       jMessageBox.setText("This updater is for version 3.02 of WandaPos. \n\n"
                 + "This update will add the following to the database. \n\n"
                 + "Variable Price flag, column to Products table \n"
                 + "Mandatory Attribute flag, column to Products table. \n"

@@ -1,25 +1,25 @@
 ﻿General Public License
 
-This file is part of uniCenta oPOS
+This file is part of WandaPos
 http://www.unicenta.com
 
-This license file applies to the uniCenta oPOS software 
-(the "uniCenta oPOS Software"), except as described in B) and C) below.
+This license file applies to the WandaPos software 
+(the "WandaPos Software"), except as described in B) and C) below.
 
-uniCenta oPOS is free software: you can redistribute it and/or modify
+WandaPos is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-uniCenta oPOS is distributed in the hope that it will be useful,
+WandaPos is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with uniCenta oPOS. If not, see <http://www.gnu.org/licenses/>
+along with WandaPos. If not, see <http://www.gnu.org/licenses/>
 
-B) Some portions of the uniCenta oPOS Software are provided by third parties.
+B) Some portions of the WandaPos Software are provided by third parties.
 In this distribution, they are:
 - Payment gateways: PaymentGatewayAuthorizeNet.java and PaymentGatewaySECPay.java
 2003 Authorize.Net and 2002 SECPay Ltd. respectively.
@@ -100,5 +100,5 @@ Jetty web server http://www.mortbay.org/jetty/. Copyright (C) 1995-2008 Mort Bay
 All other libraries, licenses and portions of code are available in the public domain
 and are acknowledged.
 
-If you have questions about the licensing terms for uniCenta oPOS Software
+If you have questions about the licensing terms for WandaPos Software
 please contact: info@unicenta.com
