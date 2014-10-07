@@ -19,9 +19,18 @@
 
 package com.openbravo.data.loader;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.openbravo.data.gui.JMessageDialog;
+import com.openbravo.data.gui.MessageInf;
+import com.openbravo.pos.forms.AppLocal;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  *
@@ -34,8 +43,13 @@ public final class Session {
     private final String m_surl;
     private final String m_sappuser;
     private final String m_spassword;
+    private final String m_database;
+    private final String m_host;
+    private final Integer m_port;
     
     private Connection m_c;
+    private MongoClient m_mongoClient;
+    private boolean mongoDBSession;
     private boolean m_bInTransaction;
 
     /**
@@ -52,13 +66,76 @@ public final class Session {
         m_surl = url;
         m_sappuser = user;
         m_spassword = password;
+        m_database = "";
+        m_host = "";
+        m_port = -1;
         
+        m_mongoClient = null;
         m_c = null;
         m_bInTransaction = false;
         
         connect(); // no lazy connection
 
         DB = getDiff();
+    }
+    
+    /**
+     * Create session for MongoDB database engine
+     * 
+     * @param host
+     * @param port
+     * @param database
+     * @param user
+     * @param password 
+     */
+    public Session(String host, Integer port, String database, String user, String password)
+    {
+        m_surl = "";
+        m_c = null;
+        m_bInTransaction = false;
+        m_host = host;
+        m_port = port;
+        m_database = database;
+        m_sappuser = user;
+        m_spassword = password;
+        
+        connectMongoDB();
+        DB = new SessionDBMongoDB();
+        mongoDBSession = true;
+    }
+
+    public boolean isMongoDBSession() {
+        return mongoDBSession;
+    }
+
+    public void setMongoDBSession(boolean mongoDBSession) {
+        this.mongoDBSession = mongoDBSession;
+    }
+
+    public boolean isM_bInTransaction() {
+        return m_bInTransaction;
+    }
+
+    public void setM_bInTransaction(boolean m_bInTransaction) {
+        this.m_bInTransaction = m_bInTransaction;
+    }
+    
+    public void connectMongoDB()
+    {
+        if (!m_sappuser.isEmpty() && !m_spassword.isEmpty() && !m_database.isEmpty()) {
+            try {
+                MongoCredential credential = MongoCredential.createMongoCRCredential(m_sappuser, m_database, m_spassword.toCharArray());
+                m_mongoClient = new MongoClient(new ServerAddress(m_host, m_port), Arrays.asList(credential));
+            } catch (UnknownHostException ex) {}
+        } else {
+            try {
+                m_mongoClient = new MongoClient(new ServerAddress(m_host, m_port));
+            } catch (UnknownHostException ex) {}
+        }
+    }
+
+    public DB getMongoDBDatabase() {
+        return m_mongoClient.getDB(m_database);
     }
     
     /**

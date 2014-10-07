@@ -103,7 +103,6 @@ public class StartPOS {
                 
                 // Set the look and feel.
                 try {             
-                    
                     Object laf = Class.forName(config.getProperty("swing.defaultlaf")).newInstance();                    
                     if (laf instanceof LookAndFeel){
                         UIManager.setLookAndFeel((LookAndFeel) laf);

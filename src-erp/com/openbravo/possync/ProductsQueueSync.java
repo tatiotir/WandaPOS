@@ -61,9 +61,9 @@ import com.openbravo.ws.externalsales.Category;
 import com.openbravo.ws.externalsales.Product;
 import com.openbravo.ws.externalsales.ProductPlus;
 import com.openbravo.ws.externalsales.Tax;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.TextMessage;
 
 public class ProductsQueueSync implements ProcessAction {
@@ -78,6 +78,7 @@ public class ProductsQueueSync implements ProcessAction {
 
     /**
      * Creates a new instance of ProductsSync
+     *
      * @param dlsystem
      * @param dlintegration
      * @param warehouse
@@ -100,101 +101,116 @@ public class ProductsQueueSync implements ProcessAction {
 //red1 using XML string from ActiveMQ -- automatically check either path (so do not use same if u want to synch customers also)
 //red1 convert string to models deprecated approach below
             ActiveMQClient mqClient = new ActiveMQClient(externalsales.getActivemqBrokerUrl(), externalsales.getActivemqUsername(), externalsales.getActivemqPassword());
-            
-            if (!mqClient.init())
-                    return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.exception"));
-            
-            productsXML = ((TextMessage)mqClient.consumeMessage(externalsales.getProductsQueue())).getText();
-            ProductPlus[] products = importQueue2Products(productsXML);
-            
-            customersXML = ((TextMessage)mqClient.consumeMessage(externalsales.getCustomersQueue())).getText();
-            Customer[] customers = importQueue2Customers(customersXML);
-            
-// Product[] products = externalsales.getProductsCatalog();
-// Customer[] customers = externalsales.getCustomers();
-            if (products == null || customers == null) {
-                throw new BasicException(AppLocal.getIntString("message.returnnull"));
+
+            if (!mqClient.init()) {
+                return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.exception"));
             }
-            if (products.length > 0) {
-                dlintegration.syncProductsBefore();
-                Date now = new Date();
-                for (Product product : products) {
-                    if (product == null) {
-                        break;
-                    }
+
+            int productsSynch = 0;
+            int customersSynch = 0;
+            
+            ArrayList<Message> productsMessageList = mqClient.consumeAllMessages(externalsales.getM_iERPPos() + externalsales.getProductsQueue());
+            ArrayList<ProductPlus[]> productsList = new ArrayList<>();
+            for (int i = 0; i < productsMessageList.size(); ++i)
+            {
+                productsList.add(importQueue2Products(((TextMessage)productsMessageList.get(i)).getText()));
+            }
+            
+            if (!productsList.isEmpty()) {
+                for (ProductPlus[] products : productsList) {
+                    dlintegration.syncProductsBefore();
+                    Date now = new Date();
+                    for (Product product : products) {
+                        if (product == null) {
+                            break;
+                        }
 // Synchonization of taxcategories
-                    TaxCategoryInfo tc = new TaxCategoryInfo(product.getTax().getId(), product.getTax().getName());
-                    dlintegration.syncTaxCategory(tc);
+                        TaxCategoryInfo tc = new TaxCategoryInfo(product.getTax().getId(), product.getTax().getName());
+                        dlintegration.syncTaxCategory(tc);
 // Synchonization of taxes
-                    TaxInfo t = new TaxInfo(product.getTax().getId(),product.getTax().getName(), tc.getID(), null, null, product.getTax().getPercentage() / 100, false, 0);
-                    dlintegration.syncTax(t);
+                        TaxInfo t = new TaxInfo(product.getTax().getId(), product.getTax().getName(), tc.getID(), null, null, product.getTax().getPercentage() / 100, false, 0);
+                        dlintegration.syncTax(t);
 // Synchonization of categories
-                    CategoryInfo c = new CategoryInfo(product.getCategory().getId(), product.getCategory().getName(), null, product.getCategory().getDescription(), true);
-                    dlintegration.syncCategory(c);
+                        CategoryInfo c = new CategoryInfo(product.getCategory().getId(), product.getCategory().getName(), null, product.getCategory().getDescription(), true);
+                        dlintegration.syncCategory(c);
 // Synchonization of products
-                    ProductInfoExt p = new ProductInfoExt();
-                    p.setID(product.getId());
-                    p.setReference(product.getId());
-                    p.setCode(product.getEan() == null || product.getEan().equals("") ? product.getId() : product.getEan());
-                    p.setName(product.getName());
-                    p.setCom(false);
-                    p.setScale(false);
-                    p.setPriceBuy(product.getPurchasePrice());
-                    p.setPriceSell(product.getListPrice());
-                    p.setCategoryID(c.getID());
-                    p.setTaxCategoryID(tc.getID());
-                    p.setImage(ImageUtils.readImage(product.getImageUrl()));
-                    dlintegration.syncProduct(p);
+                        ProductInfoExt p = new ProductInfoExt();
+                        p.setID(product.getId());
+                        p.setReference(product.getId());
+                        p.setCode(product.getEan() == null || product.getEan().equals("") ? product.getId() : product.getEan());
+                        p.setName(product.getName());
+                        p.setCom(false);
+                        p.setScale(false);
+                        p.setPriceBuy(product.getPurchasePrice());
+                        p.setPriceSell(product.getListPrice());
+                        p.setCategoryID(c.getID());
+                        p.setTaxCategoryID(tc.getID());
+                        p.setImage(ImageUtils.readImage(product.getImageUrl()));
+                        dlintegration.syncProduct(p);
 // Synchronization of stock
-                    if (product instanceof ProductPlus) {
-                        ProductPlus productplus = (ProductPlus) product;
-                        double diff = productplus.getQtyonhand() - dlsales.findProductStock(warehouse, p.getID(), null);
-                        Object[] diary = new Object[8];
-                        diary[0] = UUID.randomUUID().toString();
-                        diary[1] = now;
-                        diary[2] = diff > 0.0
-                                ? MovementReason.IN_MOVEMENT.getKey()
-                                : MovementReason.OUT_MOVEMENT.getKey();
-                        diary[3] = warehouse;
-                        diary[4] = p.getID();
-                        diary[5] = null; ///TODO find out where to get AttributeInstanceID -- red1
-                        diary[6] = new Double(diff);
-                        diary[7] = new Double(p.getPriceBuy());
-                        dlsales.getStockDiaryInsert().exec(diary);
+                        if (product instanceof ProductPlus) {
+                            ProductPlus productplus = (ProductPlus) product;
+                            double diff = productplus.getQtyonhand() - dlsales.findProductStock(warehouse, p.getID(), null);
+                            Object[] diary = new Object[8];
+                            diary[0] = UUID.randomUUID().toString();
+                            diary[1] = now;
+                            diary[2] = diff > 0.0
+                                    ? MovementReason.IN_MOVEMENT.getKey()
+                                    : MovementReason.OUT_MOVEMENT.getKey();
+                            diary[3] = warehouse;
+                            diary[4] = p.getID();
+                            diary[5] = null; ///TODO find out where to get AttributeInstanceID -- red1
+                            diary[6] = new Double(diff);
+                            diary[7] = new Double(p.getPriceBuy());
+                            dlsales.getStockDiaryInsert().exec(diary);
+                            
+                            ++productsSynch;
+                        }
                     }
                 }
 // datalogic.syncProductsAfter();
             }
-            if (customers.length > 0) {
+
+            ArrayList<Message> customersMessageList = mqClient.consumeAllMessages(externalsales.getM_iERPPos() + externalsales.getCustomersQueue());
+            ArrayList<Customer[]> customersList = new ArrayList<>();
+            for (int i = 0; i < customersMessageList.size(); ++i)
+            {
+                customersList.add(importQueue2Customers(((TextMessage)customersMessageList.get(i)).getText()));
+            }
+            
+            if (!customersList.isEmpty()) {
                 dlintegration.syncCustomersBefore();
-                for (Customer customer : customers) {
-                    CustomerInfoExt cinfo = new CustomerInfoExt(customer.getId());
-                    cinfo.setSearchkey(customer.getSearchKey());
-                    cinfo.setName(customer.getName());
-                    cinfo.setNotes(customer.getDescription());
-// TODO: Finish the integration of all fields.
-                    dlintegration.syncCustomer(cinfo);
+                for (Customer[] customers : customersList)
+                {
+                    for (Customer customer : customers) {
+                        CustomerInfoExt cinfo = new CustomerInfoExt(customer.getId());
+                        cinfo.setSearchkey(customer.getSearchKey());
+                        cinfo.setName(customer.getName());
+                        cinfo.setNotes(customer.getDescription());
+    // TODO: Finish the integration of all fields.
+                        dlintegration.syncCustomer(cinfo);
+                        
+                        ++customersSynch;
+                    }
                 }
             }
-            if (products.length == 0 && customers.length == 0) {
+
+            if (productsList.isEmpty() && customersList.isEmpty()) {
                 return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.zeroproducts"));
             } else {
-                return new MessageInf(MessageInf.SGN_SUCCESS, AppLocal.getIntString("message.syncproductsok"), AppLocal.getIntString("message.syncproductsinfo", products.length, customers.length));
+                return new MessageInf(MessageInf.SGN_SUCCESS, AppLocal.getIntString("message.syncproductsok"), AppLocal.getIntString("message.syncproductsinfo", productsSynch, customersSynch));
             }
-        } catch (ServiceException e) {
+        } catch (ServiceException | JMSException e) {
             throw new BasicException(AppLocal.getIntString("message.serviceexception"), e);
         } catch (MalformedURLException e) {
             throw new BasicException(AppLocal.getIntString("message.malformedurlexception"), e);
         } catch (SAXException | IOException | ParserConfigurationException e) {
-        } catch (JMSException ex) {
-            Logger.getLogger(ProductsQueueSync.class.getName()).log(Level.SEVERE, null, ex);
         }
         return new MessageInf(MessageInf.SGN_CAUTION, AppLocal.getIntString("message.zerocustomers"));
     }
 
     private ProductPlus[] importQueue2Products(String productsXML) throws SAXException, IOException, ParserConfigurationException {
-//uncomment for testing, together with above
-// message = "<?xml version=\"1.0\" ?><entityDetail><type>MProduct</type><detail>..</detail></entityDetail>";
+
         if (productsXML.equals("")) {
             return new ProductPlus[0];
         }
@@ -203,66 +219,54 @@ public class ProductsQueueSync implements ProcessAction {
         Document doc = db.parse(new ByteArrayInputStream(productsXML.getBytes()));
         Element docEle = doc.getDocumentElement();
         NodeList records = docEle.getElementsByTagName("detail");
-        ProductPlus[] product = new ProductPlus[records.getLength()];
-        Tax newtax = new Tax();
-        newtax.setId("99");//will be replaced later by XML tags later
-        newtax.setName("ADTax"); //will be replaced later
-        newtax.setPercentage(0.0d);
-        Category cate = new Category();
-        cate.setId("99");//will be replaced later by XML tags later
-        cate.setName("ADTax"); //will be replaced later
-        int cnt = -1;
+
+        ArrayList<ProductPlus> productList = new ArrayList<>();
         for (int i = 0; i < records.getLength(); i++) {
-//Checks to disallow certain detail records...
-//check if right POS Name (within the loop, as all Orgs are together)
-//check if XML type is about Products
+
+            //check if XML type is about Products
             if (!records.item(i).getFirstChild().getTextContent().equals(MProduct.Table_Name)) {
-                continue;
+                break;
             }
             NodeList details = records.item(i).getChildNodes();
+            ProductPlus product = new ProductPlus();
+
+            Tax newtax = new Tax();
+            newtax.setPercentage(0.0d);
+
+            Category cate = new Category();
+
             for (int j = 0; j < details.getLength(); j++) {
                 Node n = details.item(j);
                 String column = n.getNodeName();
-                if (column.equals("POSLocatorName")) {
-//checking if right POS Name
-                    if (!externalsales.getM_iERPPos().equals(n.getTextContent())) {
-                        break;
-                    }
-                    cnt++;
-                    product[cnt] = new ProductPlus();
-                } else if (column.equals("ProductName")) {
-                    product[cnt].setName(n.getTextContent());
+                if (column.equals("ProductName")) {
+                    product.setName(n.getTextContent());
                 } else if (column.equals(MProduct.COLUMNNAME_M_Product_Category_ID)) {
                     cate.setId(n.getTextContent());
-                    product[cnt].setCategory(cate);
+                    product.setCategory(cate);
                 } else if (column.equals("CategoryName")) {
                     cate.setName(n.getTextContent());
-                    product[cnt].setCategory(cate);
+                    product.setCategory(cate);
                 } else if (column.equals(MProduct.COLUMNNAME_M_Product_ID)) {
-                    product[cnt].setId(n.getTextContent());
+                    product.setId(n.getTextContent());
                 } else if (column.equals(MProduct.COLUMNNAME_C_TaxCategory_ID)) {
                     newtax.setId(n.getTextContent());
-                    product[cnt].setTax(newtax);
+                    product.setTax(newtax);
                 } else if (column.equals("TaxName")) {
                     newtax.setName(n.getTextContent());
-                    product[cnt].setTax(newtax);
+                    product.setTax(newtax);
                 } else if (column.equals("QtyOnHand")) {
-                    product[cnt].setQtyonhand(Double.parseDouble(n.getTextContent()));
+                    product.setQtyonhand(Double.parseDouble(n.getTextContent()));
                 } else if (column.equals(MProductPrice.COLUMNNAME_PriceList)) {
-                    product[cnt].setListPrice(Double.parseDouble(n.getTextContent()));
+                    product.setListPrice(Double.parseDouble(n.getTextContent()));
                 } else if (column.equals(MProductPrice.COLUMNNAME_PriceLimit)) {
-                    product[cnt].setPurchasePrice(Double.parseDouble(n.getTextContent()));
+                    product.setPurchasePrice(Double.parseDouble(n.getTextContent()));
                 } else if (column.equals(MProduct.COLUMNNAME_UPC)) {
-                    product[cnt].setEan(n.getTextContent());
+                    product.setEan(n.getTextContent());
                 }
             }
+            productList.add(product);
         }
-// need to truncate products from nulls;
-        ProductPlus[] nettProduct = new ProductPlus[cnt + 1];
-        for (int i = 0; i <= cnt; i++) {
-            nettProduct[i] = product[i];
-        }
-        return nettProduct;
+        return (ProductPlus[]) productList.toArray();
     }
 
     private Customer[] importQueue2Customers(String customersXML) throws ParserConfigurationException, SAXException, IOException {
@@ -272,10 +276,11 @@ public class ProductsQueueSync implements ProcessAction {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.parse(new ByteArrayInputStream(customersXML.getBytes()));
+
         Element docEle = doc.getDocumentElement();
         NodeList records = docEle.getElementsByTagName("detail");
         Customer[] customer = new Customer[records.getLength()];
-        int cnt = 0;
+
         for (int i = 0; i < records.getLength(); i++) {
             if (!records.item(i).getFirstChild().getTextContent().equals(MBPartner.Table_Name)) {
                 continue;

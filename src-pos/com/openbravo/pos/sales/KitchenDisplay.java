@@ -4,6 +4,10 @@
  */
 package com.openbravo.pos.sales;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.openbravo.data.loader.Session;
 import com.openbravo.pos.forms.AppView;
 import com.openbravo.pos.forms.DataLogicSystem;
@@ -41,12 +45,12 @@ public class KitchenDisplay {
         m_App=oApp;
                                     
 //get database connection details        
-       try{
-            s=m_App.getSession();
-            con=s.getConnection();                      
-        }
-        catch (Exception e){System.out.print("No session or connection");
-        }   
+       s=m_App.getSession();
+            try {
+                con = s.getConnection();
+            } catch (Exception e) {
+                System.out.print("No session or connection");
+            }
     }
 
     /**
@@ -63,7 +67,14 @@ public class KitchenDisplay {
         Date date = new Date();
         System.out.println(dateFormat.format(date));
      
-     
+//     if (s.isMongoDBSession())
+//     {
+//         DBCollection collection = m_mongoDB.getCollection("kitchendisplay");
+//         DBObject insertObject = new BasicDBObject("_id", ID).append("ORDERTIME", dateFormat.format(date).toString())
+//                 .append("PLACE", table).append("PICKUPID", pickupID).append("PRODUCT", product).append("MULTIPLY", multiply)
+//                 .append("ATTRIBUTES", attributes);
+//         collection.insert(insertObject);
+//     }
      try{
             SQL = "INSERT INTO KITCHENDISPLAY (ID, ORDERTIME, PLACE, PICKUPID, PRODUCT, MULTIPLY, ATTRIBUTES) VALUES (?, ?, ?, ?, ?, ?, ?) "; 
             pstmt=con.prepareStatement(SQL);

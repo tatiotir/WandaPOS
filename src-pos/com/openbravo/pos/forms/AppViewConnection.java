@@ -47,8 +47,24 @@ public class AppViewConnection {
      * @throws BasicException
      */
     public static Session createSession(AppProperties props) throws BasicException {
-               
-        try{
+        if ("MongoDB".equals(props.getProperty("db.engine")))
+        {
+            String sDBUser = props.getProperty("db.user");
+            String sDBPassword = props.getProperty("db.password");
+            String sDBHost = props.getProperty("db.driverlib");
+            Integer sDBPort = Integer.valueOf(props.getProperty("db.driver"));
+            String sDBName = props.getProperty("db.URL");
+            
+            if (sDBUser != null && sDBPassword != null && sDBPassword.startsWith("crypt:")) {
+                // the password is encrypted
+                AltEncrypter cypher = new AltEncrypter("cypherkey" + sDBUser);
+                sDBPassword = cypher.decrypt(sDBPassword.substring(6));
+            }   
+            return new Session(sDBHost, sDBPort, sDBName, sDBUser, sDBPassword);
+        }
+        else
+        {
+            try{
 
             // register the database driver
             if (isJavaWebStart()) {
@@ -68,11 +84,12 @@ public class AppViewConnection {
              return new Session(props.getProperty("db.URL"), sDBUser,sDBPassword);     
 
 // JG 16 May use multicatch
-        } catch (InstantiationException | IllegalAccessException | MalformedURLException | ClassNotFoundException e) {
-            throw new BasicException(AppLocal.getIntString("message.databasedrivererror"), e);
-        } catch (SQLException eSQL) {
-            throw new BasicException(AppLocal.getIntString("message.databaseconnectionerror"), eSQL);
-        }   
+            } catch (InstantiationException | IllegalAccessException | MalformedURLException | ClassNotFoundException e) {
+                throw new BasicException(AppLocal.getIntString("message.databasedrivererror"), e);
+            } catch (SQLException eSQL) {
+                throw new BasicException(AppLocal.getIntString("message.databaseconnectionerror"), eSQL);
+            }
+        }
     }
 
     private static boolean isJavaWebStart() {

@@ -19,13 +19,16 @@
 
 package com.openbravo.pos.epm;
 
+import com.mongodb.BasicDBObject;
 import com.openbravo.basic.BasicException;
 import com.openbravo.data.loader.*;
 import com.openbravo.format.Formats;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.forms.BeanFactoryDataSingle;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -86,6 +89,113 @@ public class DataLogicPresenceManagement extends BeanFactoryDataSingle {
                         dr.getBoolean(4));
             }
         };
+//        
+//        if (s.isMongoDBSession())
+//        {
+//            Map<Integer, String> readParamMap = new HashMap<>();
+//            readParamMap.put(1, "_id");
+//            readParamMap.put(2, "NAME");
+//            m_breaksvisible = new MongoDBPreparedSentence(s, "break", readParamMap, new BasicDBObject("VISIBLE", "1"), breakread);
+//            
+//            Map<Integer, String> writeParamMap = new HashMap<>();
+//            writeParamMap.put(1, "_id");
+//            writeParamMap.put(2, "STARTSHIFT");
+//            writeParamMap.put(2, "PPLID");
+//            m_checkin = new MongoDBPreparedSentence(s, "shifts", writeParamMap, 
+//                    new SerializerWriteBasic(new Datas[] {Datas.STRING, Datas.TIMESTAMP, Datas.STRING}), true);
+//            
+//            Map<Integer, String> writeParamMap1 = new HashMap<>();
+//            writeParamMap1.put(1, "ENDSHIFT");
+//            writeParamMap1.put(2, "PPLID");
+//            m_checkout = new MongoDBPreparedSentence(s, "shifts", writeParamMap1, 
+//                    new SerializerWriteBasic(new Datas[] {Datas.TIMESTAMP, Datas.STRING}), false).setNullColumn("ENDSHIFT");
+//            
+//            Map<Integer, String> writeParamMap2 = new HashMap<>();
+//            writeParamMap1.put(1, "ENDSHIFT");
+//            writeParamMap1.put(2, "PPLID");
+//            
+//            Map<Integer, String> readParamMap1 = new HashMap<>();
+//            readParamMap1.put(1, "COUNT");
+//            m_checkdate = new MongoDBPreparedSentence(s, "shifts", writeParamMap2, readParamMap1, SerializerWriteString.INSTANCE, 
+//                    SerializerReadString.INSTANCE).setCountAll(true).setNullColumn("ENDSHIFT");
+//            
+//            Map<Integer, String> writeParamMap3 = new HashMap<>();
+//            writeParamMap3.put(1, "_id");
+//            writeParamMap3.put(2, "SHIFTID");
+//            writeParamMap3.put(3, "BREAKID");
+//            writeParamMap3.put(4, "STARTTIME");
+//            m_startbreak = new MongoDBPreparedSentence(s, "shift_breaks", writeParamMap3, new SerializerWriteBasic(new Datas[] {Datas.STRING, Datas.STRING, Datas.STRING, Datas.TIMESTAMP}), true);
+//            
+//            Map<Integer, String> writeParamMap4 = new HashMap<>();
+//            writeParamMap4.put(1, "ENDTIME");
+//            writeParamMap4.put(2, "SHIFTID");
+//            m_endbreak = new MongoDBPreparedSentence(s, "shift_breaks", writeParamMap4, 
+//                    new SerializerWriteBasic(new Datas[] {Datas.TIMESTAMP, Datas.STRING}), false).setNullColumn("ENDTIME");
+//            
+//            Map<Integer, String> readParamMap2 = new HashMap<>();
+//            readParamMap2.put(1, "COUNT");
+//            m_isonbreak = new MongoDBPreparedSentence(s, "shift_breaks", new HashMap<Integer, String>(), readParamMap2, SerializerWriteString.INSTANCE
+//            , SerializerReadString.INSTANCE).setCountAll(true).setNullColumn("ENDTIME");
+//            
+//            Map<Integer, String> writeParamMap5 = new HashMap<>();
+//            writeParamMap5.put(1, "PPLID");
+//            
+//            Map<Integer, String> readParamMap3 = new HashMap<>();
+//            readParamMap3.put(1, "_id");
+//            m_shiftid = new MongoDBPreparedSentence(s, "shifts", writeParamMap5, readParamMap3, SerializerWriteString.INSTANCE
+//            , SerializerReadString.INSTANCE).setNullColumn("ENDSHIFT");
+//            
+//            Map<Integer, String> writeParamMap6 = new HashMap<>();
+//            writeParamMap6.put(1, "STARTDATE");
+//            writeParamMap6.put(2, "ENDDATE");
+//            writeParamMap6.put(3, "PPLID");
+//            
+//            Map<Integer, String> readParamMap4 = new HashMap<>();
+//            readParamMap4.put(1, "COUNT");
+//            m_isonleave = new MongoDBPreparedSentence(s, "leaves", writeParamMap6, readParamMap4, new SerializerWriteBasic(new Datas[] {Datas.TIMESTAMP, Datas.TIMESTAMP, Datas.STRING})
+//            , SerializerReadString.INSTANCE).setCountAll(true).setLessThanColumn(new String[]{"STARTDATE"})
+//                    .setGreaterThanColumn(new String[]{"ENDDATE"});
+//            
+//            Map<Integer, String> writeParamMap7 = new HashMap<>();
+//            writeParamMap7.put(1, "PPLID");
+//            
+//            Map<Integer, String> readParamMap5 = new HashMap<>();
+//            readParamMap5.put(1, "STARTSHIFT");
+//            m_lastcheckin = new MongoDBPreparedSentence(s, "shifts", writeParamMap7, readParamMap5, SerializerWriteString.INSTANCE
+//            , SerializerReadDate.INSTANCE).setNullColumn("ENDSHIFT");
+//            
+//            Map<Integer, String> writeParamMap8 = new HashMap<>();
+//            writeParamMap8.put(1, "PPLID");
+//            
+//            Map<Integer, String> readParamMap6 = new HashMap<>();
+//            readParamMap6.put(1, "MAX");
+//            m_lastcheckout = new MongoDBPreparedSentence(s, "shifts", writeParamMap8, readParamMap6, SerializerWriteString.INSTANCE
+//            , SerializerReadDate.INSTANCE).setMaxColumn("ENDSHIFT");
+//            
+//            Map<Integer, String> writeParamMap9 = new HashMap<>();
+//            writeParamMap9.put(1, "SHIFTID");
+//            
+//            Map<Integer, String> readParamMap7 = new HashMap<>();
+//            readParamMap7.put(1, "STARTTIME");
+//            m_startbreaktime = new MongoDBPreparedSentence(s, "shifts_breaks", writeParamMap9, readParamMap7, SerializerWriteString.INSTANCE
+//            , SerializerReadDate.INSTANCE).setNullColumn("ENDTIME");
+//            
+//            Map<Integer, String> writeParamMap10 = new HashMap<>();
+//            writeParamMap10.put(1, "SHIFTID");
+//            
+//            Map<Integer, String> readParamMap8 = new HashMap<>();
+//            readParamMap8.put(1, "BREAKID");
+//            m_lastbreakid = new MongoDBPreparedSentence(s, "shifts_breaks", writeParamMap9, readParamMap8, SerializerWriteString.INSTANCE
+//            , SerializerReadDate.INSTANCE).setNullColumn("ENDTIME");
+//            
+//            Map<Integer, String> writeParamMap11 = new HashMap<>();
+//            writeParamMap11.put(1, "_id");
+//            
+//            Map<Integer, String> readParamMap9 = new HashMap<>();
+//            readParamMap9.put(1, "NAME");
+//            m_breakname = new MongoDBPreparedSentence(s, "breaks", writeParamMap11, readParamMap9, SerializerWriteString.INSTANCE
+//            , SerializerReadString.INSTANCE);
+//        }
 
         tbreaks = new TableDefinition(s
             , "BREAKS"
@@ -178,13 +288,27 @@ public class DataLogicPresenceManagement extends BeanFactoryDataSingle {
      * @return
      */
     public final SentenceList getBreaksList() {
-        return new StaticSentence(s
-            , "SELECT ID, NAME FROM BREAKS ORDER BY NAME"
-            , null
-            , new SerializerRead() {@Override
- public Object readValues(DataRead dr) throws BasicException {
-                return new BreaksInfo(dr.getString(1), dr.getString(2));
-            }});
+        if (s.isMongoDBSession())
+        {
+
+            Map<Integer, String> readParamMap = new HashMap<>();
+            readParamMap.put(1, "_id");
+            readParamMap.put(2, "NAME");
+            return new MongoDBPreparedSentence(s, "breaks", readParamMap, new SerializerRead() {@Override
+     public Object readValues(DataRead dr) throws BasicException {
+                    return new BreaksInfo(dr.getString(1), dr.getString(2));
+                }}).setSortColumn("NAME");
+        }
+        else
+        {
+            return new StaticSentence(s
+                , "SELECT ID, NAME FROM BREAKS ORDER BY NAME"
+                , null
+                , new SerializerRead() {@Override
+     public Object readValues(DataRead dr) throws BasicException {
+                    return new BreaksInfo(dr.getString(1), dr.getString(2));
+                }});
+        }
     }
 
     /**
@@ -192,13 +316,31 @@ public class DataLogicPresenceManagement extends BeanFactoryDataSingle {
      * @return
      */
     public final SentenceList getLeavesList() {
-        return new StaticSentence(s
-            , "SELECT ID, PPLID, NAME, STARTDATE, ENDDATE, NOTES FROM LEAVES ORDER BY NAME"
-            , null
-            , new SerializerRead() {@Override
- public Object readValues(DataRead dr) throws BasicException {
-                return new LeavesInfo(dr.getString(1), dr.getString(2), dr.getString(3), dr.getString(4), dr.getString(5), dr.getString(6));
-            }});
+//        if (s.isMongoDBSession())
+//        {
+//
+//            Map<Integer, String> readParamMap = new HashMap<>();
+//            readParamMap.put(1, "_id");
+//            readParamMap.put(2, "PPLID");
+//            readParamMap.put(3, "NAME");
+//            readParamMap.put(4, "STARTDATE");
+//            readParamMap.put(5, "ENDDATE");
+//            readParamMap.put(6, "NOTES");
+//            return new MongoDBPreparedSentence(s, "leaves", readParamMap, new SerializerRead() {@Override
+//     public Object readValues(DataRead dr) throws BasicException {
+//                    return new LeavesInfo(dr.getString(1), dr.getString(2), dr.getString(3), dr.getString(4), dr.getString(5), dr.getString(6));
+//                }}).setSortColumn("NAME");
+//        }
+//        else
+//        {
+            return new StaticSentence(s
+                , "SELECT ID, PPLID, NAME, STARTDATE, ENDDATE, NOTES FROM LEAVES ORDER BY NAME"
+                , null
+                , new SerializerRead() {@Override
+     public Object readValues(DataRead dr) throws BasicException {
+                    return new LeavesInfo(dr.getString(1), dr.getString(2), dr.getString(3), dr.getString(4), dr.getString(5), dr.getString(6));
+                }});
+//        }
     }
 
     /**
@@ -423,10 +565,24 @@ public class DataLogicPresenceManagement extends BeanFactoryDataSingle {
      * @throws BasicException
      */
     public EmployeeInfoExt loadEmployeeExt(String id) throws BasicException {
-        return (EmployeeInfoExt) new PreparedSentence(s
-                , "SELECT ID, NAME FROM PEOPLE WHERE ID = ?"
-                , SerializerWriteString.INSTANCE
-                , new EmployeeExtRead()).find(id);
+//        if (s.isMongoDBSession())
+//        {
+//            Map<Integer, String> writeParamMap = new HashMap<>();
+//            writeParamMap.put(1, "_id");
+//            
+//            Map<Integer, String> readParamMap = new HashMap<>();
+//            readParamMap.put(1, "_id");
+//            readParamMap.put(2, "NAME");
+//            return (EmployeeInfoExt) new MongoDBPreparedSentence(s, "people", writeParamMap, readParamMap, 
+//                    SerializerWriteString.INSTANCE, new EmployeeExtRead()).find(id);
+//        }
+//        else
+//        {
+            return (EmployeeInfoExt) new PreparedSentence(s
+                    , "SELECT ID, NAME FROM PEOPLE WHERE ID = ?"
+                    , SerializerWriteString.INSTANCE
+                    , new EmployeeExtRead()).find(id);
+//        }
     }
 
     /**

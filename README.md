@@ -1,4 +1,4 @@
-WandaPOS
+wandaPOS
 ========
 
-WandaPOS = Unicenta POS + ActiveMQ + ERP(iDempiere) Integration
+wandaPOS = Unicenta POS + ActiveMQ + ERP(iDempiere) Integration

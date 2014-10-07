@@ -1,34 +1,18 @@
-//    Openbravo POS is a point of sales application designed for touch screens.
-//    http://www.openbravo.com/product/pos
-//    Copyright (c) 2007 openTrends Solucions i Sistemes, S.L
-//    Modified by Openbravo SL on March 22, 2007
-//    These modifications are copyright Openbravo SL
-//    Author/s: A. Romero
-//    You may contact Openbravo SL at: http://www.openbravo.com
-//
-//    This file is part of Openbravo POS.
-//
-//    Openbravo POS is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
-//
-//    Openbravo POS is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU General Public License for more details.
-//
-//    You should have received a copy of the GNU General Public License
-//    along with Openbravo POS.  If not, see <http://www.gnu.org/licenses/>.
 
-//    author : Ing. Tatioti Mbogning Raoul(tatiotir@itkamer.com)
+/**
+ * ActiveMQ Client which can send and receive message from or to Queue
+ * @author Ing Tatioti Mbogning Raoul(tatiotir@itkamer, tatiotir@gmail.com)
+ * @version 1.0
+ * @poweredby IT Kamer LTD Cameroon.
+ */
 
 package com.openbravo.activemq;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.CompletionListener;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -39,6 +23,7 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
@@ -51,9 +36,9 @@ public class ActiveMQClient {
     private Connection connection;
     private Session session;
     private Boolean error = false;
-    private final String activemqBrokerUrl;
-    private final String activemqUsername;
-    private final String activemqPassword;
+    private String activemqBrokerUrl = "";
+    private String activemqUsername = "";
+    private String activemqPassword = "";
 
     public Boolean error() {
         return error;
@@ -69,19 +54,31 @@ public class ActiveMQClient {
     public boolean init()
     {
         try {
-            factory = new ActiveMQConnectionFactory(activemqUsername, activemqPassword, activemqBrokerUrl);
+            factory = new ActiveMQConnectionFactory(activemqBrokerUrl);
             // Create a connection
-            connection = factory.createConnection();
+            if (!activemqUsername.isEmpty() && !activemqPassword.isEmpty())
+            	connection = factory.createConnection(activemqUsername, activemqPassword);
+            else
+            	connection = factory.createConnection();
 
+            connection.start();
             // Setup session
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            connection.start();
             
             return true;
         } catch (JMSException ex) {
             Logger.getLogger(ActiveMQClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    public void close()
+    {
+    	try {
+    		connection.stop();
+			connection.close();
+		} catch (JMSException e) {
+		}
     }
     
     public boolean sendMessage(String message, String queueName)
@@ -96,12 +93,13 @@ public class ActiveMQClient {
             // Send the message
             TextMessage textMessage = session.createTextMessage(message);
             sender.send(textMessage);
+            sender.close();
             
-            return true;
         } catch (JMSException ex) {
             Logger.getLogger(ActiveMQClient.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
-        return false;
+        return true;
     }
     
     public boolean sendMessage(Serializable messageObject, String queueName)
@@ -117,12 +115,11 @@ public class ActiveMQClient {
             ObjectMessage objectMessage = session.createObjectMessage(messageObject);
             sender.send(objectMessage);
             
-            return true;
         } catch (JMSException ex) {
-            error = true;
             Logger.getLogger(ActiveMQClient.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
-        return false;
+        return true;
     }
     
     public Message consumeMessage(String queueName)
@@ -131,10 +128,60 @@ public class ActiveMQClient {
             Destination destination = session.createQueue(queueName);
             MessageConsumer consumer = session.createConsumer(destination);
             
-            return consumer.receive();
+            Message message = consumer.receive(1000);
+            if (message != null)
+            {
+                consumer.close();
+            	return message;
+            }
+            else
+            {
+                consumer.close();
+            	return session.createTextMessage("");
+            }
         } catch (JMSException ex) {
             Logger.getLogger(ActiveMQClient.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
+    }
+    
+    public ArrayList<Message> consumeAllMessages(String queueName)
+    {
+    	try {
+            Destination destination = session.createQueue(queueName);
+            MessageConsumer consumer = session.createConsumer(destination);
+            
+            ArrayList<Message> messageList = new ArrayList<>();
+            Message message = consumer.receive(1000);
+            while (message != null)
+            {
+            	messageList.add(message);
+                message = consumer.receive(1000);
+            }
+            
+            consumer.close();
+            return messageList;
+        } catch (JMSException ex) {
+            Logger.getLogger(ActiveMQClient.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+    
+    public boolean eraseQueue(String queueName)
+    {
+    	try {
+            Destination destination = session.createQueue(queueName);
+            MessageConsumer consumer = session.createConsumer(destination);
+            
+            Message message = consumer.receive(1000);
+            while (message != null)
+            {
+                message = consumer.receive(1000);
+            }
+            return true;
+        } catch (JMSException ex) {
+            Logger.getLogger(ActiveMQClient.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 }

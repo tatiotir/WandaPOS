@@ -427,7 +427,8 @@ public class JPrincipalApp extends javax.swing.JPanel implements AppUserView {
             if (sNewPassword != null) {
                 try {
                     
-                    m_dlSystem.execChangePassword(new Object[] {sNewPassword, m_appuser.getId()});
+                    m_dlSystem.execChangePassword(new Object[] {sNewPassword, m_appuser.getId(), m_appuser.getName(), m_appuser.getPassword(), 
+                    m_appuser.getCard(), m_appuser.getRole(), m_appuser.getIcon()});
                     m_appuser.setPassword(sNewPassword);
                 } catch (BasicException e) {
                     JMessageDialog.showMessage(JPrincipalApp.this, new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.cannotchangepassword")));             

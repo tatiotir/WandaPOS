@@ -36,6 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.compiere.model.I_I_Order;
 import com.openbravo.basic.BasicException;
 import com.openbravo.data.gui.MessageInf;
+import com.openbravo.pos.customers.CustomerInfoExt;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.forms.DataLogicSystem;
 import com.openbravo.pos.forms.ProcessAction;
@@ -45,6 +46,10 @@ import com.openbravo.ws.externalsales.BPartner;
 import com.openbravo.ws.externalsales.Order;
 import com.openbravo.ws.externalsales.OrderIdentifier;
 import com.openbravo.ws.externalsales.OrderLine;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
 import javax.xml.stream.XMLStreamException;
 
 public class OrdersQueueSync implements ProcessAction {
@@ -86,6 +91,11 @@ public class OrdersQueueSync implements ProcessAction {
                     return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.exception"));
                 
                 if (mqClient.sendMessage(transformTickets(ticketlist), externalsales.getOrdersQueue())) {
+                    // Update Orders Queue count
+//                    TextMessage ordersCountMessage = (TextMessage)mqClient.consumeMessage("OrdersQueueCount");
+//                    int ordersCount = (ordersCountMessage.getText().isEmpty() ? 0 : Integer.valueOf(ordersCountMessage.getText())) + 1;
+//                    mqClient.sendMessage(String.valueOf(ordersCount), "OrdersQueueCount");
+                    
                     dlintegration.execTicketUpdate();
                     return new MessageInf(MessageInf.SGN_SUCCESS, AppLocal.getIntString("message.syncordersok"), AppLocal.getIntString("message.syncordersinfo", ticketlist.size()));
                 }
@@ -114,27 +124,25 @@ public class OrdersQueueSync implements ProcessAction {
             for (int i = 0; i < ticketlist.size(); i++) {
                 if (null != this) {
                     TicketInfo ticket = ticketlist.get(i);
-                    orders[i] = new Order();
-                    OrderIdentifier orderid = new OrderIdentifier();
-                    orderid.setDocumentNo(Integer.toString(ticket.getTicketId()));
-                    orders[i].setOrderId(orderid);
+//                    orders[i] = new Order();
+//                    OrderIdentifier orderid = new OrderIdentifier();
+//                    orderid.setDocumentNo(Integer.toString(ticket.getTicketId()));
+//                    orders[i].setOrderId(orderid);
                     Calendar datenew = Calendar.getInstance();
                     datenew.setTime(ticket.getDate());
-                    orderid.setDateNew(datenew);
-                    orders[i].setState(800175);
+//                    orderid.setDateNew(datenew);
+//                    orders[i].setState(800175);
 // set the business partner
-                    BPartner bp;
+                    CustomerInfoExt bp;
                     if (ticket.getCustomerId() == null) {
                         bp = null;
                     } else {
-                        bp = new BPartner();
-                        bp.setId(ticket.getCustomer().getSearchkey());
-                        bp.setName(ticket.getCustomer().getName());
+                        bp = ticket.getCustomer();
 //red1 check for BP at OrderLine creation as that is also OrderHeader
                     }
-                    orders[i].setBusinessPartner(bp);
+                    //orders[i].setBusinessPartner(bp);
 //Bag order lines
-                    OrderLine[] orderLine = new OrderLine[ticket.getLines().size()];
+                    //OrderLine[] orderLine = new OrderLine[ticket.getLines().size()];
                     for (int j = 0; j < ticket.getLines().size(); j++) {
 //red1 - convert to XML for ActiveMQ
                         writer.writeStartElement("detail");
@@ -144,50 +152,87 @@ public class OrdersQueueSync implements ProcessAction {
 //red1 - convert to XML
                         if (bp != null) {
                             writer.writeStartElement(I_I_Order.COLUMNNAME_BPartnerValue);
-                            writer.writeCharacters(bp.getId());
+                            writer.writeCharacters(bp.getName());
+                            writer.writeEndElement();
+                            
+                            writer.writeStartElement(I_I_Order.COLUMNNAME_Postal);
+                            writer.writeCharacters(bp.getPostal());
+                            writer.writeEndElement();
+                            
+                            writer.writeStartElement(I_I_Order.COLUMNNAME_Address1);
+                            writer.writeCharacters(bp.getAddress());
+                            writer.writeEndElement();
+                            
+                            writer.writeStartElement(I_I_Order.COLUMNNAME_Address2);
+                            writer.writeCharacters(bp.getAddress2());
+                            writer.writeEndElement();
+                            
+                            writer.writeStartElement(I_I_Order.COLUMNNAME_Phone);
+                            writer.writeCharacters(bp.getPhone2().isEmpty() ? bp.getPhone() : bp.getPhone2());
+                            writer.writeEndElement();
+                            
+                            writer.writeStartElement(I_I_Order.COLUMNNAME_City);
+                            writer.writeCharacters(bp.getCity());
+                            writer.writeEndElement();
+                            
+                            writer.writeStartElement(I_I_Order.COLUMNNAME_EMail);
+                            writer.writeCharacters(bp.getEmail());
+                            writer.writeEndElement();
+                            
+                            writer.writeStartElement(I_I_Order.COLUMNNAME_RegionName);
+                            writer.writeCharacters(bp.getRegion());
                             writer.writeEndElement();
                         }
+                        
                         writer.writeStartElement(I_I_Order.COLUMNNAME_AD_Client_ID);
                         writer.writeCharacters(externalsales.getM_iERPId());
                         writer.writeEndElement();
-                        writer.writeStartElement("POSLocatorName");
+                        
+                        writer.writeStartElement("PosLocatorName");
                         writer.writeCharacters(externalsales.getM_iERPPos());
                         writer.writeEndElement();
+                        
                         writer.writeStartElement(I_I_Order.COLUMNNAME_DocumentNo);
                         writer.writeCharacters(Integer.toString(ticket.getTicketId()));
                         writer.writeEndElement();
+                        
                         writer.writeStartElement(I_I_Order.COLUMNNAME_DateOrdered);
                         writer.writeCharacters(new java.sql.Timestamp(datenew.getTime().getTime()).toString());
                         writer.writeEndElement();
+                        
                         TicketLineInfo line = ticket.getLines().get(j);
-                        orderLine[j] = new OrderLine();
-                        orderLine[j].setOrderLineId(String.valueOf(line.getTicketLine()));// or simply "j"
-                        if (line.getProductID() == null) {
-                            orderLine[j].setProductId("0");
-                        } else {
-                            orderLine[j].setProductId(line.getProductID()); // Error capture
-//red1 - convert to XML
-                            writer.writeStartElement(I_I_Order.COLUMNNAME_ProductValue);
-                            writer.writeCharacters(line.getProductName());
-                            writer.writeEndElement();
-                        }
-                        orderLine[j].setUnits(line.getMultiply());
-                        orderLine[j].setPrice(line.getPrice());
-                        orderLine[j].setTaxId(line.getTaxInfo().getId());
+//                        orderLine[j] = new OrderLine();
+//                        orderLine[j].setOrderLineId(String.valueOf(line.getTicketLine()));// or simply "j"
+//                        if (line.getProductID() != null) {
+//                            orderLine[j].setProductId("0");
+//                        } else {
+//                            orderLine[j].setProductId(line.getProductID()); // Error capture
+////red1 - convert to XML
+//                            
+//                        }
+//                        orderLine[j].setUnits(line.getMultiply());
+//                        orderLine[j].setPrice(line.getPrice());
+//                        orderLine[j].setTaxId(line.getTaxInfo().getId());
 //red1 - convert to XML these 3 items
+                        writer.writeStartElement(I_I_Order.COLUMNNAME_ProductValue);
+                        writer.writeCharacters(line.getProductName());
+                        writer.writeEndElement();
+                            
                         writer.writeStartElement(I_I_Order.COLUMNNAME_QtyOrdered);
                         writer.writeCharacters(Double.toString(line.getMultiply()));
                         writer.writeEndElement();
+                        
                         writer.writeStartElement(I_I_Order.COLUMNNAME_PriceActual);
                         writer.writeCharacters(Double.toString(line.getPrice()));
                         writer.writeEndElement();
+
                         writer.writeStartElement(I_I_Order.COLUMNNAME_TaxAmt);
                         writer.writeCharacters(Double.toString(ticket.getTax()));
                         writer.writeEndElement();
 //TODO get User Code as SalesRep_ID (see ImportQueue2AD)
                         writer.writeEndElement();//detail
                     }
-                    orders[i].setLines(orderLine);
+                    //orders[i].setLines(orderLine);
                 }
             }
 //red1
