@@ -452,7 +452,7 @@ public class RestaurantDBUtils {
      *
      * @param tableID
      */
-    public void clearTableMovedFlag (String tableID){
+    public void clearTableMovedFlag(String tableID){
             try{
                 SQL = "UPDATE PLACES SET TABLEMOVED='false' WHERE NAME=?";
                 pstmt=con.prepareStatement(SQL);
