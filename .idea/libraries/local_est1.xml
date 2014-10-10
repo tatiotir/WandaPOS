@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="local_est1">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/build/classes/Estonian/local_est.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
