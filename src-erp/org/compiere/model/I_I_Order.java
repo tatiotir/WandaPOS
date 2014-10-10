@@ -11,7 +11,7 @@ package org.compiere.model;
  * @author tatiotir
  */
 public class I_I_Order {
-    public static final String Table_Name = "";
+    public static final String Table_Name = "I_Order";
     public static final String COLUMNNAME_DocTypeName = "DocTypeName";
     public static final String COLUMNNAME_BPartnerValue = "BPartnerValue";
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";

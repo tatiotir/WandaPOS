@@ -26,23 +26,6 @@
 package com.openbravo.possync;
 
 import com.openbravo.activemq.ActiveMQClient;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.Date;
-import java.util.UUID;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.rpc.ServiceException;
-import org.compiere.model.MProduct;
-import org.compiere.model.MProductPrice;
-import org.compiere.model.MBPartner;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import com.openbravo.basic.BasicException;
 import com.openbravo.data.gui.MessageInf;
 import com.openbravo.data.loader.ImageUtils;
@@ -56,15 +39,33 @@ import com.openbravo.pos.inventory.TaxCategoryInfo;
 import com.openbravo.pos.ticket.CategoryInfo;
 import com.openbravo.pos.ticket.ProductInfoExt;
 import com.openbravo.pos.ticket.TaxInfo;
-import com.openbravo.ws.customers.Customer;
 import com.openbravo.ws.externalsales.Category;
 import com.openbravo.ws.externalsales.Product;
 import com.openbravo.ws.externalsales.ProductPlus;
 import com.openbravo.ws.externalsales.Tax;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ServiceException;
+import org.compiere.model.MBPartner;
+import org.compiere.model.MLocation;
+import org.compiere.model.MProduct;
+import org.compiere.model.MProductPrice;
+import org.compiere.model.MUser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class ProductsQueueSync implements ProcessAction {
 
@@ -73,8 +74,7 @@ public class ProductsQueueSync implements ProcessAction {
     private final DataLogicSales dlsales;
     private final String warehouse;
     private ExternalSalesHelper externalsales;
-    private String productsXML = "";
-    private String customersXML = "";
+    private String appUser = "";
 
     /**
      * Creates a new instance of ProductsSync
@@ -84,7 +84,7 @@ public class ProductsQueueSync implements ProcessAction {
      * @param warehouse
      * @param dlsales
      */
-    public ProductsQueueSync(DataLogicSystem dlsystem, DataLogicIntegration dlintegration, DataLogicSales dlsales, String warehouse) {
+    public ProductsQueueSync(DataLogicSystem dlsystem, DataLogicIntegration dlintegration, DataLogicSales dlsales, String warehouse, String appUser) {
         this.dlsystem = dlsystem;
         this.dlintegration = dlintegration;
         this.dlsales = dlsales;
@@ -109,16 +109,19 @@ public class ProductsQueueSync implements ProcessAction {
             int productsSynch = 0;
             int customersSynch = 0;
             
+            System.out.println("Yeea here :!!!!! ");
+            
             ArrayList<Message> productsMessageList = mqClient.consumeAllMessages(externalsales.getM_iERPPos() + externalsales.getProductsQueue());
             ArrayList<ProductPlus[]> productsList = new ArrayList<>();
             for (int i = 0; i < productsMessageList.size(); ++i)
             {
+                System.out.println("xml : " + ((TextMessage)productsMessageList.get(i)).getText());
                 productsList.add(importQueue2Products(((TextMessage)productsMessageList.get(i)).getText()));
             }
             
             if (!productsList.isEmpty()) {
                 for (ProductPlus[] products : productsList) {
-                    dlintegration.syncProductsBefore();
+                    //dlintegration.syncProductsBefore();
                     Date now = new Date();
                     for (Product product : products) {
                         if (product == null) {
@@ -151,7 +154,7 @@ public class ProductsQueueSync implements ProcessAction {
                         if (product instanceof ProductPlus) {
                             ProductPlus productplus = (ProductPlus) product;
                             double diff = productplus.getQtyonhand() - dlsales.findProductStock(warehouse, p.getID(), null);
-                            Object[] diary = new Object[8];
+                            Object[] diary = new Object[9];
                             diary[0] = UUID.randomUUID().toString();
                             diary[1] = now;
                             diary[2] = diff > 0.0
@@ -159,11 +162,11 @@ public class ProductsQueueSync implements ProcessAction {
                                     : MovementReason.OUT_MOVEMENT.getKey();
                             diary[3] = warehouse;
                             diary[4] = p.getID();
-                            diary[5] = null; ///TODO find out where to get AttributeInstanceID -- red1
-                            diary[6] = new Double(diff);
-                            diary[7] = new Double(p.getPriceBuy());
+                            diary[5] = p.getAttributeSetID();
+                            diary[6] = diff;
+                            diary[7] = p.getPriceBuy();
+                            diary[8] = appUser;
                             dlsales.getStockDiaryInsert().exec(diary);
-                            
                             ++productsSynch;
                         }
                     }
@@ -172,7 +175,7 @@ public class ProductsQueueSync implements ProcessAction {
             }
 
             ArrayList<Message> customersMessageList = mqClient.consumeAllMessages(externalsales.getM_iERPPos() + externalsales.getCustomersQueue());
-            ArrayList<Customer[]> customersList = new ArrayList<>();
+            ArrayList<CustomerInfoExt[]> customersList = new ArrayList<>();
             for (int i = 0; i < customersMessageList.size(); ++i)
             {
                 customersList.add(importQueue2Customers(((TextMessage)customersMessageList.get(i)).getText()));
@@ -180,16 +183,11 @@ public class ProductsQueueSync implements ProcessAction {
             
             if (!customersList.isEmpty()) {
                 dlintegration.syncCustomersBefore();
-                for (Customer[] customers : customersList)
+                for (CustomerInfoExt[] customers : customersList)
                 {
-                    for (Customer customer : customers) {
-                        CustomerInfoExt cinfo = new CustomerInfoExt(customer.getId());
-                        cinfo.setSearchkey(customer.getSearchKey());
-                        cinfo.setName(customer.getName());
-                        cinfo.setNotes(customer.getDescription());
-    // TODO: Finish the integration of all fields.
-                        dlintegration.syncCustomer(cinfo);
-                        
+                    for (CustomerInfoExt customer : customers) {
+                        // Synch this customer
+                        dlintegration.syncCustomer(customer);
                         ++customersSynch;
                     }
                 }
@@ -220,7 +218,7 @@ public class ProductsQueueSync implements ProcessAction {
         Element docEle = doc.getDocumentElement();
         NodeList records = docEle.getElementsByTagName("detail");
 
-        ArrayList<ProductPlus> productList = new ArrayList<>();
+        ProductPlus[] productList = new ProductPlus[records.getLength()];
         for (int i = 0; i < records.getLength(); i++) {
 
             //check if XML type is about Products
@@ -264,14 +262,15 @@ public class ProductsQueueSync implements ProcessAction {
                     product.setEan(n.getTextContent());
                 }
             }
-            productList.add(product);
+            productList[i] = product;
         }
-        return (ProductPlus[]) productList.toArray();
+        
+        return productList;
     }
 
-    private Customer[] importQueue2Customers(String customersXML) throws ParserConfigurationException, SAXException, IOException {
+    private CustomerInfoExt[] importQueue2Customers(String customersXML) throws ParserConfigurationException, SAXException, IOException {
         if (customersXML.equals("")) {
-            return new Customer[0];
+            return new CustomerInfoExt[0];
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -279,25 +278,67 @@ public class ProductsQueueSync implements ProcessAction {
 
         Element docEle = doc.getDocumentElement();
         NodeList records = docEle.getElementsByTagName("detail");
-        Customer[] customer = new Customer[records.getLength()];
+        CustomerInfoExt[] customer = new CustomerInfoExt[records.getLength()];
 
         for (int i = 0; i < records.getLength(); i++) {
             if (!records.item(i).getFirstChild().getTextContent().equals(MBPartner.Table_Name)) {
                 continue;
             }
-            customer[i] = new Customer();
+            customer[i] = new CustomerInfoExt("");
             NodeList details = records.item(i).getChildNodes();
             for (int j = 0; j < details.getLength(); j++) {
                 Node n = details.item(j);
                 String column = n.getNodeName();
-                if (column.equals("CustomerName")) {
-                    customer[i].setName(n.getTextContent());
-                } else if (column.equals(MBPartner.COLUMNNAME_Value)) {
-                    customer[i].setSearchKey(n.getTextContent());
-                } else if (column.equals(MBPartner.COLUMNNAME_C_BPartner_ID)) {
-                    customer[i].setId(n.getTextContent());
-                } else if (column.equals(MBPartner.COLUMNNAME_Description)) {
-                    customer[i].setDescription(n.getTextContent());
+                switch (column)
+                {
+                    case "CustomerName" :
+                        customer[i].setName(n.getTextContent());
+                        break;
+                    case MBPartner.COLUMNNAME_Value :
+                        customer[i].setSearchkey(n.getTextContent());
+                        break;
+                    case MBPartner.COLUMNNAME_C_BPartner_ID : 
+                        customer[i].setId(n.getTextContent());
+                        break;
+                    case MBPartner.COLUMNNAME_Description :
+                        customer[i].setNotes(n.getTextContent());
+                        break;
+                    case MBPartner.COLUMNNAME_TaxID :
+                        customer[i].setTaxid(n.getTextContent());
+                        break;
+                    case MLocation.COLUMNNAME_Address1 : 
+                        customer[i].setAddress(n.getTextContent());
+                        break;
+                    case MLocation.COLUMNNAME_Address2 :
+                        customer[i].setAddress2(n.getTextContent());
+                        break;
+                    case MLocation.COLUMNNAME_City :
+                        customer[i].setCity(n.getTextContent());
+                        break;
+                    case "RegionName" :
+                        customer[i].setRegion(n.getTextContent());
+                        break;
+                    case "Country" :
+                        customer[i].setCountry(n.getTextContent());
+                        break;
+                    case "Image" :
+                        customer[i].setImage(n.getTextContent());
+                        break;
+                    case MUser.COLUMNNAME_EMail :
+                        customer[i].setEmail(n.getTextContent());
+                        break;
+                    case MUser.COLUMNNAME_Fax :
+                        customer[i].setFax(n.getTextContent());
+                        break;
+                    case MUser.COLUMNNAME_Name :
+                        customer[i].setName(n.getTextContent());
+                        break;
+                    case MUser.COLUMNNAME_Phone :
+                        customer[i].setPhone(n.getTextContent());
+                        break;
+                    case MUser.COLUMNNAME_Phone2 :
+                        customer[i].setPhone2(n.getTextContent());
+                        break;
                 }
             }
         }

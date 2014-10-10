@@ -35,6 +35,7 @@ import com.openbravo.pos.scale.DeviceScale;
 import com.openbravo.pos.scanpal2.DeviceScanner;
 import com.openbravo.pos.scanpal2.DeviceScannerFactory;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -133,6 +134,8 @@ public class JRootApp extends JPanel implements AppView {
         m_aBeanFactories = new HashMap<>();
 
         // Inicializo los componentes visuales
+        this.setOpaque(true);
+        this.setBackground(new java.awt.Color(100, 100, 100));
         initComponents();
         jScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(30, 30));
     }
@@ -143,7 +146,6 @@ public class JRootApp extends JPanel implements AppView {
      * @return
      */
     public boolean initApp(AppProperties props) {
-
         m_props = props;
         m_jPanelDown.setVisible(!(Boolean.valueOf(m_props.getProperty("till.hideinfo"))));
 
@@ -346,13 +348,13 @@ public class JRootApp extends JPanel implements AppView {
         String newText = m_props.getProperty("start.text");
         if (newText != null) {
             if (newText.equals("")) {
-                jLabel1.setText("<html><center>wandaPOS - Touch Friendly Point of Sale<br>"
+                jLabel1.setText("<html><center>WandaPos - Africa's Gift to the World<br>"
                         + "Copyright \u00A9 2014-2015 IT Kamer <br>"
-                        + "http://www.itkamer.com/<br>"
+                        + "http://www.wandaapos.com/<br>"
                         + "<br>"
-                        + "wandaPOS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br>"
+                        + "WandaPos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br>"
                         + "<br>"
-                        + "WandaPOS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>"
+                        + "WandaPos is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>"
                         + "<br>"
                         + "You should have received a copy of the GNU General Public License along with wandaPos.  If not, see http://www.gnu.org/licenses/<br>"
                         + "</center>");
@@ -872,14 +874,14 @@ public class JRootApp extends JPanel implements AppView {
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/wandapos.png")));
-        jLabel1.setText("<html><center>uniCenta oPOS - Touch Friendly Point of Sale<br>" +
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/wandapos_logo.png")));
+        jLabel1.setText("<html><center>WandaPos - Africa's Gift to the World<br>" +
             "Copyright \u00A9 2009-2014 uniCenta <br>" +
-            "http://www.unicenta.com<br>" +
+            "http://www.wandaapos.com/<br>" +
             "<br>" +
-            "uniCenta oPOS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br>" +
+            "WandaPos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br>" +
             "<br>" +
-            "uniCenta oPOS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>" +
+            "WandaPos is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>" +
             "<br>" +
             "You should have received a copy of the GNU General Public License along with uniCenta oPOS.  If not, see http://www.gnu.org/licenses/<br>" +
             "</center>");
@@ -889,7 +891,7 @@ public class JRootApp extends JPanel implements AppView {
         jLabel1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jPanel4.add(jLabel1);
 
-        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setBackground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setBorder(null);
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N

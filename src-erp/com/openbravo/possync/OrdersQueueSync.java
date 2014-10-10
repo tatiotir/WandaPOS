@@ -119,30 +119,16 @@ public class OrdersQueueSync implements ProcessAction {
             writer.writeStartElement("type");
             writer.writeCharacters(I_I_Order.Table_Name);
             writer.writeEndElement();
-// Transforming tickets to orders
-            Order[] orders = new Order[ticketlist.size()];
-            for (int i = 0; i < ticketlist.size(); i++) {
-                if (null != this) {
-                    TicketInfo ticket = ticketlist.get(i);
-//                    orders[i] = new Order();
-//                    OrderIdentifier orderid = new OrderIdentifier();
-//                    orderid.setDocumentNo(Integer.toString(ticket.getTicketId()));
-//                    orders[i].setOrderId(orderid);
+            for (TicketInfo ticket : ticketlist) {
+                if (ticket != null) {
                     Calendar datenew = Calendar.getInstance();
                     datenew.setTime(ticket.getDate());
-//                    orderid.setDateNew(datenew);
-//                    orders[i].setState(800175);
-// set the business partner
                     CustomerInfoExt bp;
                     if (ticket.getCustomerId() == null) {
                         bp = null;
                     } else {
                         bp = ticket.getCustomer();
-//red1 check for BP at OrderLine creation as that is also OrderHeader
                     }
-                    //orders[i].setBusinessPartner(bp);
-//Bag order lines
-                    //OrderLine[] orderLine = new OrderLine[ticket.getLines().size()];
                     for (int j = 0; j < ticket.getLines().size(); j++) {
 //red1 - convert to XML for ActiveMQ
                         writer.writeStartElement("detail");
@@ -201,19 +187,6 @@ public class OrdersQueueSync implements ProcessAction {
                         writer.writeEndElement();
                         
                         TicketLineInfo line = ticket.getLines().get(j);
-//                        orderLine[j] = new OrderLine();
-//                        orderLine[j].setOrderLineId(String.valueOf(line.getTicketLine()));// or simply "j"
-//                        if (line.getProductID() != null) {
-//                            orderLine[j].setProductId("0");
-//                        } else {
-//                            orderLine[j].setProductId(line.getProductID()); // Error capture
-////red1 - convert to XML
-//                            
-//                        }
-//                        orderLine[j].setUnits(line.getMultiply());
-//                        orderLine[j].setPrice(line.getPrice());
-//                        orderLine[j].setTaxId(line.getTaxInfo().getId());
-//red1 - convert to XML these 3 items
                         writer.writeStartElement(I_I_Order.COLUMNNAME_ProductValue);
                         writer.writeCharacters(line.getProductName());
                         writer.writeEndElement();

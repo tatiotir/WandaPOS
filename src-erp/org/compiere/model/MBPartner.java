@@ -11,9 +11,10 @@ package org.compiere.model;
  * @author tatiotir
  */
 public class MBPartner {
-    public static Object Table_Name = "openbravoPOS";
-    public static Object COLUMNNAME_Value = "Value";
-    public static Object COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
-    public static Object COLUMNNAME_Description = "Description";
+    public static final String Table_Name = "C_BPartner";
+    public static final String COLUMNNAME_Value = "Value";
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
+    public static final String COLUMNNAME_Description = "Description";
+    public static final String COLUMNNAME_TaxID = "TaxID";
     
 }

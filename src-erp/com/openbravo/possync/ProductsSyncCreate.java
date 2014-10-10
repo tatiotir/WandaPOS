@@ -37,7 +37,7 @@ public class ProductsSyncCreate extends BeanFactoryCache {
         DataLogicIntegration dli = (DataLogicIntegration) app.getBean("com.openbravo.possync.DataLogicIntegration");
         DataLogicSales dlsales = (DataLogicSales) app.getBean("com.openbravo.pos.forms.DataLogicSales");
 
-        ProductsQueueSync bean = new ProductsQueueSync(dlSystem, dli, dlsales, app.getInventoryLocation());
+        ProductsQueueSync bean = new ProductsQueueSync(dlSystem, dli, dlsales, app.getInventoryLocation(), app.getAppUserView().getUser().getName());
         return bean;
     }
 }

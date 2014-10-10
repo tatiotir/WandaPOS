@@ -81,31 +81,55 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
 
                 // Try to update
                 if (new PreparedSentence(s,
-                        "UPDATE CUSTOMERS SET SEARCHKEY = ?, NAME = ?, NOTES = ?, VISIBLE = "
+                        "UPDATE CUSTOMERS SET SEARCHKEY = ?, NAME = ?, NOTES = ?, TAXTID = ?, ADDRESS = ?, ADDRESS2 = ?, CITY = ?, REGION = ?, "
+                                + "COUNTRY = ?, EMAIL = ?, PHONE = ?, PHONE2 = ?, FAX = ?, IMAGE = ?, VISIBLE = "
                         + s.DB.TRUE() + " WHERE ID = ?",
                         SerializerWriteParams.INSTANCE).exec(new DataParams() {
                             public void writeValues() throws BasicException {
                                 setString(1, customer.getSearchkey());
                                 setString(2, customer.getName());
-                                setString(3, customer.getAddress());
-                                setString(4, customer.getId());
+                                setString(3, customer.getNotes());
+                                setString(4, customer.getTaxid());
+                                setString(5, customer.getAddress());
+                                setString(6, customer.getAddress2());
+                                setString(7, customer.getCity());
+                                setString(8, customer.getRegion());
+                                setString(9, customer.getCountry());
+                                setString(10, customer.getEmail());
+                                setString(11, customer.getPhone());
+                                setString(12, customer.getPhone2());
+                                setString(13, customer.getFax());
+                                setString(14, customer.getImage());
+                                setString(15, customer.getId());
                             }
                         }) == 0) {
 
                     // If not updated, try to insert
                     new PreparedSentence(
-                            s,
-                            "INSERT INTO CUSTOMERS(ID, SEARCHKEY, NAME, NOTES, VISIBLE) VALUES (?, ?, ?, ?, "
-                            + s.DB.TRUE() + ")",
-                            SerializerWriteParams.INSTANCE)
-                            .exec(new DataParams() {
-                                public void writeValues() throws BasicException {
-                                    setString(1, customer.getId());
-                                    setString(2, customer.getSearchkey());
-                                    setString(3, customer.getName());
-                                    setString(4, customer.getAddress());
-                                }
-                            });
+                        s,
+                        "INSERT INTO CUSTOMERS(ID, SEARCHKEY, NAME, NOTES, TAXTID, ADDRESS, ADDRESS2, CITY, REGION, "
+                            + "COUNTRY, EMAIL, PHONE, PHONE2, FAX, IMAGE, VISIBLE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
+                        + s.DB.TRUE() + ")",
+                        SerializerWriteParams.INSTANCE)
+                        .exec(new DataParams() {
+                            public void writeValues() throws BasicException {
+                                setString(1, customer.getId());
+                                setString(2, customer.getSearchkey());
+                                setString(3, customer.getName());
+                                setString(4, customer.getNotes());
+                                setString(5, customer.getTaxid());
+                                setString(6, customer.getAddress());
+                                setString(7, customer.getAddress2());
+                                setString(8, customer.getCity());
+                                setString(9, customer.getRegion());
+                                setString(10, customer.getCountry());
+                                setString(11, customer.getEmail());
+                                setString(12, customer.getPhone());
+                                setString(13, customer.getPhone2());
+                                setString(14, customer.getFax());
+                                setString(15, customer.getImage());
+                            }
+                        });
                 }
 
                 return null;
@@ -248,9 +272,10 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
 				// Sync the Product in a transaction
 
                 // Try to update
+                // Ing Tatioti Mbogning Raoul(tatiotir) add column DISPLAY
                 if (new PreparedSentence(
                         s,
-                        "UPDATE PRODUCTS SET REFERENCE = ?, CODE = ?, NAME = ?, PRICEBUY = ?, PRICESELL = ?, CATEGORY = ?, TAXCAT = ?, IMAGE = ? WHERE ID = ?",
+                        "UPDATE PRODUCTS SET REFERENCE = ?, CODE = ?, NAME = ?, PRICEBUY = ?, PRICESELL = ?, CATEGORY = ?, TAXCAT = ?, IMAGE = ?, DISPLAY = ? WHERE ID = ?",
                         SerializerWriteParams.INSTANCE).exec(new DataParams() {
                             public void writeValues() throws BasicException {
                                 setString(1, prod.getReference());
@@ -263,16 +288,18 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
                                 setString(6, prod.getCategoryID());
                                 setString(7, prod.getTaxCategoryID());
                                 setBytes(8, ImageUtils.writeImage(prod.getImage()));
+                                setString(9, "<html>" + prod.getName());
 						// setDouble(x, 0.0);
                                 // setDouble(x, 0.0);
-                                setString(9, prod.getID());
+                                setString(10, prod.getID());
                             }
                         }) == 0) {
 
                     // If not updated, try to insert
+                    // Ing Tatioti Mbogning Raoul(tatiotir) add column DISPLAY
                     new PreparedSentence(
                             s,
-                            "INSERT INTO PRODUCTS (ID, REFERENCE, CODE, NAME, ISCOM, ISSCALE, PRICEBUY, PRICESELL, CATEGORY, TAXCAT, IMAGE, STOCKCOST, STOCKVOLUME) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            "INSERT INTO PRODUCTS (ID, REFERENCE, CODE, NAME, ISCOM, ISSCALE, PRICEBUY, PRICESELL, CATEGORY, TAXCAT, IMAGE, STOCKCOST, STOCKVOLUME, DISPLAY) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                             SerializerWriteParams.INSTANCE)
                             .exec(new DataParams() {
                                 public void writeValues() throws BasicException {
@@ -286,23 +313,29 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
                                     setDouble(8, prod.getPriceSell());
                                     setString(9, prod.getCategoryID());
                                     setString(10, prod.getTaxCategoryID());
-                                    setBytes(11, ImageUtils.writeImage(prod
-                                                    .getImage()));
+                                    setBytes(11, ImageUtils.writeImage(prod.getImage()));
                                     setDouble(12, 0.0);
                                     setDouble(13, 0.0);
+                                    setString(14, "<html>" + prod.getName());
                                 }
                             });
                 }
 
                 // Insert in catalog
-                new StaticSentence(
-                        s,
-                        // leyonce - Insert into the product catalog if the
-                        // products aren't already there,
-                        "INSERT INTO  PRODUCTS_CAT(PRODUCT,CATORDER) SELECT  ?,NULL WHERE NOT EXISTS (SELECT 1 FROM PRODUCTS_CAT WHERE PRODUCT = ?)  ",
-                        //"INSERT INTO PRODUCTS_CAT (PRODUCT,CATORDER) VALUES (?, NULL)",
-                        new SerializerWriteBasic(Datas.STRING, Datas.STRING)
-                ).exec(prod.getID(), prod.getID());
+                new StaticSentence(s, 
+                        "INSERT INTO PRODUCTS_CAT(PRODUCT, CATORDER) VALUES (?, NULL)",
+                        SerializerWriteString.INSTANCE
+                        ).exec(prod.getID());
+                
+//                // Insert in catalog
+//                new StaticSentence(
+//                        s,
+//                        // leyonce - Insert into the product catalog if the
+//                        // products aren't already there,
+//                        "INSERT INTO  PRODUCTS_CAT(PRODUCT,CATORDER) SELECT  ?,NULL WHERE NOT EXISTS (SELECT 1 FROM PRODUCTS_CAT WHERE PRODUCT = ?)  ",
+//                        //"INSERT INTO PRODUCTS_CAT (PRODUCT,CATORDER) VALUES (?, NULL)",
+//                        new SerializerWriteBasic(Datas.STRING, Datas.STRING)
+//                ).exec(prod.getID(), prod.getID());
 
                 return null;
             }

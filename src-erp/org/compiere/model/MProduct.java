@@ -11,10 +11,10 @@ package org.compiere.model;
  * @author tatiotir
  */
 public class MProduct {
-    public static Object Table_Name = "M_Product";
-    public static Object COLUMNNAME_M_Product_Category_ID= "M_Product_Category_ID";
-    public static Object COLUMNNAME_M_Product_ID = "M_Product_ID";
-    public static Object COLUMNNAME_C_TaxCategory_ID = "C_TaxCategory_ID";
-    public static Object COLUMNNAME_UPC = "UPC";
+    public static final String Table_Name = "M_Product";
+    public static final String COLUMNNAME_M_Product_Category_ID= "M_Product_Category_ID";
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+    public static final String COLUMNNAME_C_TaxCategory_ID = "C_TaxCategory_ID";
+    public static final String COLUMNNAME_UPC = "UPC";
     
 }

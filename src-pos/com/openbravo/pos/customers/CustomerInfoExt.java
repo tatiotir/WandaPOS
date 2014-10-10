@@ -499,5 +499,4 @@ public class CustomerInfoExt extends CustomerInfo {
     public void setImage(String image) {
         this.image = image;
     }
-    
 }
