@@ -35,7 +35,7 @@ public class AppLocal {
     /**
      *
      */
-    public static final String APP_ID = "Wanda POS";
+    public static final String APP_ID = "wandapos";
 
     /**
      *

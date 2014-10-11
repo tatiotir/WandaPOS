@@ -115,8 +115,8 @@ group = menu.addGroup("Menu.Backoffice");
         submenu.addPanel("/com/openbravo/images/reports.png", "Menu.UserSells", "/com/openbravo/reports/usersales.bs");
 
     submenu.addTitle("Menu.Maintenance.ERP");
-       submenu.addExecution("/com/openbravo/images/Wanda POS.png", "Menu.ERPProducts", "com.openbravo.possync.ProductsSyncCreate");
-       submenu.addExecution("/com/openbravo/images/Wanda POS.png", "Menu.ERPOrders", "com.openbravo.possync.OrdersSyncCreate");
+       submenu.addExecution("/com/openbravo/images/wandapos.png", "Menu.ERPProducts", "com.openbravo.possync.ProductsSyncCreate");
+       submenu.addExecution("/com/openbravo/images/wandapos.png", "Menu.ERPOrders", "com.openbravo.possync.OrdersSyncCreate");
 
 // EPM
 //** Reporting only tested with MySQL.  Using with Derby (Default) DB will result in errors

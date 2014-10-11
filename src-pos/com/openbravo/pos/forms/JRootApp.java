@@ -338,7 +338,7 @@ public class JRootApp extends JPanel implements AppView {
         String newLogo = m_props.getProperty("start.logo");
         if (newLogo != null) {
             if ("".equals(newLogo)) {
-                jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/Wanda POS_logo.png")));
+                jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/wandapos_logo.png")));
             } else {
                 jLabel1.setIcon(new javax.swing.ImageIcon(newLogo));
             }
@@ -874,14 +874,14 @@ public class JRootApp extends JPanel implements AppView {
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/Wanda POS_logo.png")));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/wandapos_logo.png")));
         jLabel1.setText("<html><center>Wanda POS - Africa's Gift to the World<br>" +
             "Copyright \u00A9 2009-2014 uniCenta <br>" +
             "http://www.wandaapos.com/<br>" +
             "<br>" +
-            "Wanda POS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br>" +
+            "WandaPos is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br>" +
             "<br>" +
-            "Wanda POS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>" +
+            "WandaPos is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>" +
             "<br>" +
             "You should have received a copy of the GNU General Public License along with uniCenta oPOS.  If not, see http://www.gnu.org/licenses/<br>" +
             "</center>");

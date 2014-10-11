@@ -18,11 +18,6 @@
 //    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
 package com.openbravo.pos.config;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
 import com.openbravo.data.gui.JMessageDialog;
 import com.openbravo.data.gui.MessageInf;
 import com.openbravo.data.loader.Session;
@@ -43,10 +38,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -241,13 +232,13 @@ public class JPanelConfigDatabase extends javax.swing.JPanel implements PanelCon
 
         jLabel5.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/Wanda POS_logo_100.png")));
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/wandapos_logo_100.png")));
         jLabel5.setText(bundle.getString("message.DBDefault")); // NOI18N
         jLabel5.setToolTipText("");
         jLabel5.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         jButton1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jButton1.setText("Wanda POS Web site");
+        jButton1.setText("wandaPos Web site");
         jButton1.setMaximumSize(new java.awt.Dimension(150, 45));
         jButton1.setMinimumSize(new java.awt.Dimension(150, 45));
         jButton1.setPreferredSize(new java.awt.Dimension(150, 45));

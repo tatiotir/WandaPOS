@@ -6,7 +6,7 @@
             <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/ws/customers/Customer.java</file>
             <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/possync/OrdersQueueSync.java</file>
             <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/activemq/ActiveMQClient.java</file>
-            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/org/compiere/model/MProduct.java</file>
+            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/possync/DataLogicIntegration.java</file>
             <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/possync/ProductsQueueSync.java</file>
         </group>
     </open-files>
