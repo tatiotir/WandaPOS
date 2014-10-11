@@ -1,7 +1,7 @@
 @echo off
 REM    uniCenta oPOS Touch Friendly Point of Sales designed for Touch Screen
 REM    Copyright (c) 2009-20143 uniCenta
-REM    http://sourceforge.net/projects/unicentaopos
+REM    https://sourceforge.net/projects/wandaposdapos/
 REM
 REM    This file is part of uniCenta oPOS
 REM

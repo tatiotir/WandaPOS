@@ -1,21 +1,21 @@
-//    WandaPos  - Touch Friendly Point Of Sale
-//    Copyright (c) 2009-2014 uniCenta & previous Openbravo POS works
-//    http://www.unicenta.com
+//    uniCenta oPOS  - Touch Friendly Point Of Sale
+//    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Openbravo POS works
+//    www.erp-university-africa.com
 //
-//    This file is part of WandaPos
+//    This file is part of uniCenta oPOS
 //
-//    WandaPos is free software: you can redistribute it and/or modify
+//    uniCenta oPOS is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
 //    the Free Software Foundation, either version 3 of the License, or
 //    (at your option) any later version.
 //
-//   WandaPos is distributed in the hope that it will be useful,
+//   uniCenta oPOS is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //    GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License
-//    along with WandaPos.  If not, see <http://www.gnu.org/licenses/>
+//    along with uniCenta oPOS.  If not, see <http://www.gnu.org/licenses/>
 
 package com.openbravo.pos.forms;
 
@@ -190,9 +190,6 @@ public class AppConfig implements AppProperties {
         String dirname = System.getProperty("dirname.path");
         dirname = dirname == null ? "./" : dirname;
         
-        m_propsconfig.setProperty("activemq.broker.url", "tcp://localhost:61616");
-        m_propsconfig.setProperty("activemq.username", "admin");
-        m_propsconfig.setProperty("activemq.password", "");
         m_propsconfig.setProperty("db.driverlib", new File(new File(dirname), "lib/derby.jar").getAbsolutePath());
         m_propsconfig.setProperty("db.driver", "org.apache.derby.jdbc.EmbeddedDriver");
         m_propsconfig.setProperty("db.URL", "jdbc:derby:" + new File(new File(System.getProperty("user.home")), AppLocal.APP_ID + "-database").getAbsolutePath() + ";create=true");

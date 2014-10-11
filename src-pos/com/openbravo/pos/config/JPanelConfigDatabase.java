@@ -1,21 +1,21 @@
-//    WandaPos  - Touch Friendly Point Of Sale
+//    Wanda POS - Africa's Gift to the World
 //    Copyright (c) 2009-2014 uniCenta
-//    http://www.unicenta.com
+//    www.erp-university-africa.com
 //
-//    This file is part of WandaPos
+//    This file is part of Wanda POS
 //
-//    WandaPos is free software: you can redistribute it and/or modify
+//    Wanda POS is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
 //    the Free Software Foundation, either version 3 of the License, or
 //    (at your option) any later version.
 //
-//   WandaPos is distributed in the hope that it will be useful,
+//   Wanda POS is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //    GNU General Public License for more details.
 //
 //    You should have received a copy of the GNU General Public License
-//    along with WandaPos.  If not, see <http://www.gnu.org/licenses/>.
+//    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
 package com.openbravo.pos.config;
 
 import com.mongodb.BasicDBObject;
@@ -241,13 +241,13 @@ public class JPanelConfigDatabase extends javax.swing.JPanel implements PanelCon
 
         jLabel5.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/uniCenta_logo_vert_100.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/Wanda POS_logo_100.png")));
         jLabel5.setText(bundle.getString("message.DBDefault")); // NOI18N
         jLabel5.setToolTipText("");
         jLabel5.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         jButton1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jButton1.setText("wandaPos Web site");
+        jButton1.setText("Wanda POS Web site");
         jButton1.setMaximumSize(new java.awt.Dimension(150, 45));
         jButton1.setMinimumSize(new java.awt.Dimension(150, 45));
         jButton1.setPreferredSize(new java.awt.Dimension(150, 45));
@@ -386,7 +386,7 @@ public class JPanelConfigDatabase extends javax.swing.JPanel implements PanelCon
         } else if ("Apache Derby Client/Server".equals(jcboDBDriver.getSelectedItem())) {
             jtxtDbDriverLib.setText(new File(new File(dirname), "lib/derbyclient.jar").getAbsolutePath());
             jtxtDbDriver.setText("org.apache.derby.jdbc.ClientDriver");
-            jtxtDbURL.setText("jdbc:derby://localhost:1527/wandapos");
+            jtxtDbURL.setText("jdbc:derby://localhost:1527/Wanda POS");
 
         } else if ("HSQLDB".equals(jcboDBDriver.getSelectedItem())) {
             jtxtDbDriverLib.setText(new File(new File(dirname), "lib/hsqldb.jar").getAbsolutePath());
@@ -398,17 +398,17 @@ public class JPanelConfigDatabase extends javax.swing.JPanel implements PanelCon
         } else if ("MySQL".equals(jcboDBDriver.getSelectedItem())) {
             jtxtDbDriverLib.setText(new File(new File(dirname), "lib/mysql-connector-java-5.1.26-bin.jar").getAbsolutePath());
             jtxtDbDriver.setText("com.mysql.jdbc.Driver");
-            jtxtDbURL.setText("jdbc:mysql://localhost:3306/wandapos");
+            jtxtDbURL.setText("jdbc:mysql://localhost:3306/Wanda POS");
 
         } else if ("Oracle 11g Express".equals(jcboDBDriver.getSelectedItem())) {
             jtxtDbDriverLib.setText(new File(new File(dirname), "lib/ojdbc6.jar").getAbsolutePath());
             jtxtDbDriver.setText("oracle.jdbc.driver.OracleDriver");
-            jtxtDbURL.setText("jdbc:oracle:thin://localhost:1521/wandapos");
+            jtxtDbURL.setText("jdbc:oracle:thin://localhost:1521/Wanda POS");
 
         } else if ("PostgreSQL".equals(jcboDBDriver.getSelectedItem())) {
             jtxtDbDriverLib.setText(new File(new File(dirname), "lib/postgresql-9.2-1003.jdbc4.jar").getAbsolutePath());
             jtxtDbDriver.setText("org.postgresql.Driver");
-            jtxtDbURL.setText("jdbc:postgresql://localhost:5432/wandapos");
+            jtxtDbURL.setText("jdbc:postgresql://localhost:5432/Wanda POS");
 //        } else if ("MongoDB".equals(jcboDBDriver.getSelectedItem())) {
 //            // Add by Ing. Tatioti Mbogning Raoul
 //            jLabel18.setText(AppLocal.getIntString("Label.DbHost"));
@@ -417,7 +417,7 @@ public class JPanelConfigDatabase extends javax.swing.JPanel implements PanelCon
 //            jbtnDbDriverLib.setVisible(false);
 //            jtxtDbDriverLib.setText("localhost");
 //            jtxtDbDriver.setText("27017");
-//            jtxtDbURL.setText("wandapos");
+//            jtxtDbURL.setText("Wanda POS");
 //            jtxtDbUser.setText("");
 //            jtxtDbPassword.setText("");
 //        } else {

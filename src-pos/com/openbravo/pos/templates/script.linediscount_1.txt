@@ -2,7 +2,7 @@
 //
 //    uniCenta oPOS - Touch Friendly Point Of Sale
 //    Copyright (c) 2009-2014 uniCenta
-//    http://sourceforge.net/projects/unicentaopos
+//    https://sourceforge.net/projects/wandaposdapos/
 //
 //    This file is part of uniCenta oPOS.
 //

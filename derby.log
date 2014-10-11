@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
 Thu Sep 25 21:05:28 WAT 2014:
 Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-0148-ae6b-1b0e-000004f6e1d8 
-on database directory C:\Users\TATIOTI-IDEAPAD\wandaPOS-database  with class loader sun.misc.Launcher$AppClassLoader@dbe996d 
+on database directory C:\Users\TATIOTI-IDEAPAD\Wanda POS-database  with class loader sun.misc.Launcher$AppClassLoader@dbe996d 
 Loaded from file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.7.0_40-b43

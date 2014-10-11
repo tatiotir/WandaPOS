@@ -1,4 +1,4 @@
-Project: wandaPOS v3.60
+Project: Wanda POS v3.60
 Topic:	Locales
 Author:	Jack Gerrard
 Date: 	5th April 2014
@@ -11,13 +11,13 @@ All files, including these Locale files, are made available under the GPL v3 Lic
 *******************************************************************************
 Please refer to Locales Guide for installation details.
 
-wandaPOS supports 15 languages.
+Wanda POS supports 15 languages.
 
 English UK is the default language set.
 
 Not all locales are completely translated
 
-The locale files shipped with this version of wandaPOS are the latest at the date of this release.
+The locale files shipped with this version of Wanda POS are the latest at the date of this release.
 
 Latest locales can be found here: www.unicenta.com/downloads
 
@@ -29,7 +29,7 @@ pos_messages.properties is the MAIN application label and Messages file
 
 Reports:
 Each report has a .properties file associated with it.
-You will find the files in the wandaPOS installation folder in the
+You will find the files in the Wanda POS installation folder in the
 \reports\com\openbravo\reports
 
 HOW TO CHANGE YOUR LANGUAGE
@@ -37,4 +37,4 @@ HOW TO CHANGE YOUR LANGUAGE
    into the \unicentaopos\locales parent folder
 2. Copy the content of reports folder from the language sub-folder
    \locales\languagename\reports folder into the \unicentaopos\reports folder 
-3. Set the wandaPOS Configuration>Locale to your required language
+3. Set the Wanda POS Configuration>Locale to your required language

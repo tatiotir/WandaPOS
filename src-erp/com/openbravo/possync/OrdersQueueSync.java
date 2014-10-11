@@ -33,7 +33,7 @@ import java.util.List;
 import javax.xml.rpc.ServiceException;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import org.compiere.model.I_I_Order;
+import com.openbravo.compiere.model.I_I_Order;
 import com.openbravo.basic.BasicException;
 import com.openbravo.data.gui.MessageInf;
 import com.openbravo.pos.customers.CustomerInfoExt;

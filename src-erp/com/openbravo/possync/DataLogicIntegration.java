@@ -81,7 +81,7 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
 
                 // Try to update
                 if (new PreparedSentence(s,
-                        "UPDATE CUSTOMERS SET SEARCHKEY = ?, NAME = ?, NOTES = ?, TAXTID = ?, ADDRESS = ?, ADDRESS2 = ?, CITY = ?, REGION = ?, "
+                        "UPDATE CUSTOMERS SET SEARCHKEY = ?, NAME = ?, NOTES = ?, TAXID = ?, ADDRESS = ?, ADDRESS2 = ?, CITY = ?, REGION = ?, "
                                 + "COUNTRY = ?, EMAIL = ?, PHONE = ?, PHONE2 = ?, FAX = ?, IMAGE = ?, VISIBLE = "
                         + s.DB.TRUE() + " WHERE ID = ?",
                         SerializerWriteParams.INSTANCE).exec(new DataParams() {
@@ -107,7 +107,7 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
                     // If not updated, try to insert
                     new PreparedSentence(
                         s,
-                        "INSERT INTO CUSTOMERS(ID, SEARCHKEY, NAME, NOTES, TAXTID, ADDRESS, ADDRESS2, CITY, REGION, "
+                        "INSERT INTO CUSTOMERS(ID, SEARCHKEY, NAME, NOTES, TAXID, ADDRESS, ADDRESS2, CITY, REGION, "
                             + "COUNTRY, EMAIL, PHONE, PHONE2, FAX, IMAGE, VISIBLE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                         + s.DB.TRUE() + ")",
                         SerializerWriteParams.INSTANCE)
@@ -320,22 +320,15 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
                                 }
                             });
                 }
-
-                // Insert in catalog
-                new StaticSentence(s, 
-                        "INSERT INTO PRODUCTS_CAT(PRODUCT, CATORDER) VALUES (?, NULL)",
-                        SerializerWriteString.INSTANCE
-                        ).exec(prod.getID());
                 
-//                // Insert in catalog
-//                new StaticSentence(
-//                        s,
-//                        // leyonce - Insert into the product catalog if the
-//                        // products aren't already there,
-//                        "INSERT INTO  PRODUCTS_CAT(PRODUCT,CATORDER) SELECT  ?,NULL WHERE NOT EXISTS (SELECT 1 FROM PRODUCTS_CAT WHERE PRODUCT = ?)  ",
-//                        //"INSERT INTO PRODUCTS_CAT (PRODUCT,CATORDER) VALUES (?, NULL)",
-//                        new SerializerWriteBasic(Datas.STRING, Datas.STRING)
-//                ).exec(prod.getID(), prod.getID());
+                // Insert in catalog
+                new StaticSentence(
+                        s,
+                        // Tatioti Mbogning Raoul - Insert into the product catalog if the products aren't already there,
+                        "INSERT IGNORE INTO PRODUCTS_CAT(PRODUCT,CATORDER) SELECT ?, NULL FROM PRODUCTS_CAT WHERE NOT EXISTS (SELECT 1 FROM PRODUCTS_CAT WHERE PRODUCT = ?)",
+                        // "INSERT INTO PRODUCTS_CAT (PRODUCT,CATORDER) VALUES (?, NULL)",
+                        new SerializerWriteBasic(Datas.STRING, Datas.STRING)
+                ).exec(prod.getID(), prod.getID());
 
                 return null;
             }

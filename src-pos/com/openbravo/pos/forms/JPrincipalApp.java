@@ -1,15 +1,15 @@
-//    WandaPos Touch Friendly Point of Sale
-//    Copyright (c) 2009-2014 uniCenta & previous Openbravo POS works
+//    Wanda POS Touch Friendly Point of Sale
+//    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Openbravo POS works
 //    http://www.unicenta.net/product
 //
-//    This file is part of WandaPos.
+//    This file is part of Wanda POS.
 //
-//    WandaPos is free software: you can redistribute it and/or modify
+//    Wanda POS is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
 //    the Free Software Foundation, either version 3 of the License, or
 //    (at your option) any later version.
 //
-//    WandaPos is distributed in the hope that it will be useful,
+//    Wanda POS is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //    GNU General Public License for more details.
