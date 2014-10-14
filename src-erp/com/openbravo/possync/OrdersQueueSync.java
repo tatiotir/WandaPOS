@@ -114,6 +114,9 @@ public class OrdersQueueSync implements ProcessAction {
                         writer.writeCharacters("POS Order");
                         writer.writeEndElement();
 //red1 - convert to XML
+                        
+                        // Add by Ing Tatioti Mbogning Raoul
+                        // Finish the synchronisation of all informations about Partner
                         if (bp != null) {
                             writer.writeStartElement(I_I_Order.COLUMNNAME_BPartnerValue);
                             writer.writeCharacters(bp.getName());
