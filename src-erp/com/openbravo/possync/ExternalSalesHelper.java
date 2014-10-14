@@ -22,38 +22,20 @@
 //    along with Openbravo POS.  If not, see <http://www.gnu.org/licenses/>.
 package com.openbravo.possync;
 
-import com.openbravo.activemq.ActiveMQClient;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import javax.xml.rpc.ServiceException;
-import java.rmi.RemoteException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import com.openbravo.basic.BasicException;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.forms.DataLogicSystem;
-import com.openbravo.pos.util.AltEncrypter;
-import com.openbravo.pos.util.Base64Encoder;
-import com.openbravo.ws.customers.Customer;
-import com.openbravo.ws.customers.WebServiceImpl;
-import com.openbravo.ws.customers.WebServiceImplServiceLocator;
-import com.openbravo.ws.externalsales.ExternalSalesImpl;
-import com.openbravo.ws.externalsales.ExternalSalesImplServiceLocator;
-import com.openbravo.ws.externalsales.Order;
-import com.openbravo.ws.externalsales.Product;
-import com.openbravo.ws.externalsales.ProductPlus;
 
 public class ExternalSalesHelper {
 
-    private ExternalSalesImpl externalSales;
-    private WebServiceImpl externalCustomers;
-
-    private String m_sERPUser;
-    private String m_sERPPassword;
+//    private ExternalSalesImpl externalSales;
+//    private WebServiceImpl externalCustomers;
+//
+//    private String m_sERPUser;
+//    private String m_sERPPassword;
+//    private String m_iERPOrg;
     private String m_iERPId;
-    private String m_iERPOrg;
     private String m_iERPPos;
     private String activemqBrokerUrl;
     private String activemqUsername;
@@ -128,98 +110,102 @@ public class ExternalSalesHelper {
 
     /**
      * Creates a new instance of WebServiceHelper
+     * @param dlsystem
+     * @throws com.openbravo.basic.BasicException
      */
-    public ExternalSalesHelper(DataLogicSystem dlsystem) throws BasicException, ServiceException, MalformedURLException {
+    public ExternalSalesHelper(DataLogicSystem dlsystem) throws BasicException /*, ServiceException, MalformedURLException*/ {
 
-        Properties prop = dlsystem.getResourceAsProperties("openbravo.properties");
+        Properties prop = dlsystem.getResourceAsProperties("wandapos.properties");
         if (prop == null) {
             throw new BasicException(AppLocal.getIntString("message.propsnotdefined"));
         } else {
-            String url = prop.getProperty("url");
-            if (url == null || url.equals("")) {
+            String brokerUrl = prop.getProperty("activemq-brokerUrl");
+            if (brokerUrl == null || brokerUrl.equals("")) {
                 throw new BasicException(AppLocal.getIntString("message.urlnotdefined"));
             } else {
 
                 // Get activeMQ paramaters and Queues
+                // Add by Ing Tatioti Mbogning Raoul (tatiotir@itkamer.com || tatiotir@gmail.com)
                 activemqBrokerUrl = prop.getProperty("activemq-brokerUrl");
                 activemqUsername = prop.getProperty("activemq-username");
                 activemqPassword = prop.getProperty("activemq-password");
                 ordersQueue = prop.getProperty("orders-queue");
                 productsQueue = prop.getProperty("products-queue");
                 customersQueue = prop.getProperty("customers-queue");
-
-                url = url.trim();
-
-                // transform the URL for backwards compatibility
-                if (url.endsWith("/ExternalSales")) {
-                    url = url.substring(0, url.length() - 14);
-                }
-
-                externalSales = new ExternalSalesImplServiceLocator().getExternalSales(new URL(url + "/ExternalSales"));
-                externalCustomers = new WebServiceImplServiceLocator().getWebService(new URL(url + "/WebService"));
-
-                m_sERPUser = prop.getProperty("user");
-                m_sERPPassword = prop.getProperty("password");
-                if (m_sERPUser != null && m_sERPPassword != null && m_sERPPassword.startsWith("crypt:")) {
-                    // La clave esta encriptada.
-                    AltEncrypter cypher = new AltEncrypter("key" + m_sERPUser);
-                    m_sERPPassword = cypher.decrypt(m_sERPPassword.substring(6));
-                }
-                m_sERPPassword = getPasswordHash(m_sERPPassword);
-                m_iERPId = prop.getProperty("id");
-                m_iERPOrg = prop.getProperty("org");
                 m_iERPPos = prop.getProperty("pos");
+                m_iERPId = prop.getProperty("id");
+
+//                url = url.trim();
+//
+//                // transform the URL for backwards compatibility
+//                if (url.endsWith("/ExternalSales")) {
+//                    url = url.substring(0, url.length() - 14);
+//                }
+//
+//                externalSales = new ExternalSalesImplServiceLocator().getExternalSales(new URL(url + "/ExternalSales"));
+//                externalCustomers = new WebServiceImplServiceLocator().getWebService(new URL(url + "/WebService"));
+//
+//                m_sERPUser = prop.getProperty("user");
+//                m_sERPPassword = prop.getProperty("password");
+//                if (m_sERPUser != null && m_sERPPassword != null && m_sERPPassword.startsWith("crypt:")) {
+//                    // La clave esta encriptada.
+//                    AltEncrypter cypher = new AltEncrypter("key" + m_sERPUser);
+//                    m_sERPPassword = cypher.decrypt(m_sERPPassword.substring(6));
+//                }
+//                m_sERPPassword = getPasswordHash(m_sERPPassword);
+//                m_iERPId = prop.getProperty("id");
+//                m_iERPOrg = prop.getProperty("org");
             }
         }
     }
 
-    public Customer[] getCustomers() throws RemoteException {
-        try {
-            // 2.40 service
-            return externalCustomers.getCustomers(m_iERPId, m_sERPUser, m_sERPPassword);
-        } catch (RemoteException e) {
-            // 2.30 service not exists
-            return new Customer[0];
-        }
-    }
-
-    public Customer[] getCustomerFromActiveMQ() {
-        ActiveMQClient mqClient = new ActiveMQClient(activemqBrokerUrl, activemqUsername, activemqPassword);
-        //Consume custo
-        mqClient.consumeMessage(customersQueue);
-        return null;
-    }
-
-    public Product[] getProductsCatalogFromActiveMQ() {
-        ActiveMQClient mqClient = new ActiveMQClient(activemqBrokerUrl, activemqUsername, activemqPassword);
-        //Consume products
-        mqClient.consumeMessage(productsQueue);
-        return null;
-    }
-
-    public Product[] getProductsCatalog() throws RemoteException {
-        try {
-            // 2.40 service
-            return externalSales.getProductsPlusCatalog(m_iERPId, m_iERPOrg, m_iERPPos, m_sERPUser, m_sERPPassword);
-        } catch (RemoteException e) {
-            // 2.30 service
-            return externalSales.getProductsCatalog(m_iERPId, m_iERPOrg, m_iERPPos, m_sERPUser, m_sERPPassword);
-        }
-    }
-
-    public boolean uploadOrders(Order[] orderstoupload) throws RemoteException {
-        return externalSales.uploadOrders(m_iERPId, m_iERPOrg, m_iERPPos, orderstoupload, m_sERPUser, m_sERPPassword);
-    }
-
-    private static String getPasswordHash(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte raw[] = md.digest(password.getBytes("UTF-8"));
-            return Base64Encoder.encode(raw);
-        } catch (NoSuchAlgorithmException e) {
-            return null; // never happens :-)
-        } catch (UnsupportedEncodingException e) {
-            return null; // never happens :-)
-        }
-    }
+//    public Customer[] getCustomers() throws RemoteException {
+//        try {
+//            // 2.40 service
+//            return externalCustomers.getCustomers(m_iERPId, m_sERPUser, m_sERPPassword);
+//        } catch (RemoteException e) {
+//            // 2.30 service not exists
+//            return new Customer[0];
+//        }
+//    }
+//
+//    public Customer[] getCustomerFromActiveMQ() {
+//        ActiveMQClient mqClient = new ActiveMQClient(activemqBrokerUrl, activemqUsername, activemqPassword);
+//        //Consume custo
+//        mqClient.consumeMessage(customersQueue);
+//        return null;
+//    }
+//
+//    public Product[] getProductsCatalogFromActiveMQ() {
+//        ActiveMQClient mqClient = new ActiveMQClient(activemqBrokerUrl, activemqUsername, activemqPassword);
+//        //Consume products
+//        mqClient.consumeMessage(productsQueue);
+//        return null;
+//    }
+//
+//    public Product[] getProductsCatalog() throws RemoteException {
+//        try {
+//            // 2.40 service
+//            return externalSales.getProductsPlusCatalog(m_iERPId, m_iERPOrg, m_iERPPos, m_sERPUser, m_sERPPassword);
+//        } catch (RemoteException e) {
+//            // 2.30 service
+//            return externalSales.getProductsCatalog(m_iERPId, m_iERPOrg, m_iERPPos, m_sERPUser, m_sERPPassword);
+//        }
+//    }
+//
+//    public boolean uploadOrders(Order[] orderstoupload) throws RemoteException {
+//        return externalSales.uploadOrders(m_iERPId, m_iERPOrg, m_iERPPos, orderstoupload, m_sERPUser, m_sERPPassword);
+//    }
+//
+//    private static String getPasswordHash(String password) {
+//        try {
+//            MessageDigest md = MessageDigest.getInstance("SHA-1");
+//            byte raw[] = md.digest(password.getBytes("UTF-8"));
+//            return Base64Encoder.encode(raw);
+//        } catch (NoSuchAlgorithmException e) {
+//            return null; // never happens :-)
+//        } catch (UnsupportedEncodingException e) {
+//            return null; // never happens :-)
+//        }
+//    }
 }

@@ -27,10 +27,8 @@ package com.openbravo.possync;
 
 import com.openbravo.activemq.ActiveMQClient;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.util.Calendar;
 import java.util.List;
-import javax.xml.rpc.ServiceException;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import com.openbravo.compiere.model.I_I_Order;
@@ -42,14 +40,6 @@ import com.openbravo.pos.forms.DataLogicSystem;
 import com.openbravo.pos.forms.ProcessAction;
 import com.openbravo.pos.ticket.TicketInfo;
 import com.openbravo.pos.ticket.TicketLineInfo;
-import com.openbravo.ws.externalsales.BPartner;
-import com.openbravo.ws.externalsales.Order;
-import com.openbravo.ws.externalsales.OrderIdentifier;
-import com.openbravo.ws.externalsales.OrderLine;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import javax.xml.stream.XMLStreamException;
 
 public class OrdersQueueSync implements ProcessAction {
@@ -71,40 +61,28 @@ public class OrdersQueueSync implements ProcessAction {
 
     @Override
     public MessageInf execute() throws BasicException {
-        try {
-            if (externalsales == null) {
-                externalsales = new ExternalSalesHelper(dlsystem);
-            }
-// Get tickets
-            List<TicketInfo> ticketlist = dlintegration.getTickets();
-            for (TicketInfo ticket : ticketlist) {
-                ticket.setLines(dlintegration.getTicketLines(ticket.getId()));
-                ticket.setPayments(dlintegration.getTicketPayments(ticket.getId()));
-            }
-            if (ticketlist.isEmpty()) {
-                return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.zeroorders"));
-            } else {
-                
-                ActiveMQClient mqClient = new ActiveMQClient(externalsales.getActivemqBrokerUrl(), externalsales.getActivemqUsername(), externalsales.getActivemqPassword());
-
-                if (!mqClient.init())
-                    return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.exception"));
-                
-                if (mqClient.sendMessage(transformTickets(ticketlist), externalsales.getOrdersQueue())) {
-                    // Update Orders Queue count
-//                    TextMessage ordersCountMessage = (TextMessage)mqClient.consumeMessage("OrdersQueueCount");
-//                    int ordersCount = (ordersCountMessage.getText().isEmpty() ? 0 : Integer.valueOf(ordersCountMessage.getText())) + 1;
-//                    mqClient.sendMessage(String.valueOf(ordersCount), "OrdersQueueCount");
-                    
-                    dlintegration.execTicketUpdate();
-                    return new MessageInf(MessageInf.SGN_SUCCESS, AppLocal.getIntString("message.syncordersok"), AppLocal.getIntString("message.syncordersinfo", ticketlist.size()));
-                }
+        if (externalsales == null) {
+            externalsales = new ExternalSalesHelper(dlsystem);
+        }
+        List<TicketInfo> ticketlist = dlintegration.getTickets();
+        for (TicketInfo ticket : ticketlist) {
+            ticket.setLines(dlintegration.getTicketLines(ticket.getId()));
+            ticket.setPayments(dlintegration.getTicketPayments(ticket.getId()));
+        }
+        if (ticketlist.isEmpty()) {
+            return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.zeroorders"));
+        } else {
+            
+            ActiveMQClient mqClient = new ActiveMQClient(externalsales.getActivemqBrokerUrl(), externalsales.getActivemqUsername(), externalsales.getActivemqPassword());
+            
+            if (!mqClient.init())
                 return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.exception"));
+            
+            if (mqClient.sendMessage(transformTickets(ticketlist), externalsales.getOrdersQueue())) {
+                dlintegration.execTicketUpdate();
+                return new MessageInf(MessageInf.SGN_SUCCESS, AppLocal.getIntString("message.syncordersok"), AppLocal.getIntString("message.syncordersinfo", ticketlist.size()));
             }
-        } catch (ServiceException e) {
-            throw new BasicException(AppLocal.getIntString("message.serviceexception"), e);
-        } catch (MalformedURLException e) {
-            throw new BasicException(AppLocal.getIntString("message.malformedurlexception"), e);
+            return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.exception"));
         }
     }
 

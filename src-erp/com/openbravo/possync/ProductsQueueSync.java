@@ -83,6 +83,7 @@ public class ProductsQueueSync implements ProcessAction {
      * @param dlintegration
      * @param warehouse
      * @param dlsales
+     * @param appUser
      */
     public ProductsQueueSync(DataLogicSystem dlsystem, DataLogicIntegration dlintegration, DataLogicSales dlsales, String warehouse, String appUser) {
         this.dlsystem = dlsystem;
@@ -90,6 +91,7 @@ public class ProductsQueueSync implements ProcessAction {
         this.dlsales = dlsales;
         this.warehouse = warehouse;
         externalsales = null;
+        this.appUser = appUser;
     }
 
     @Override
@@ -108,8 +110,6 @@ public class ProductsQueueSync implements ProcessAction {
 
             int productsSynch = 0;
             int customersSynch = 0;
-            
-            System.out.println("Yeea here :!!!!! ");
             
             ArrayList<Message> productsMessageList = mqClient.consumeAllMessages(externalsales.getM_iERPPos() + externalsales.getProductsQueue());
             ArrayList<ProductPlus[]> productsList = new ArrayList<>();
@@ -198,7 +198,7 @@ public class ProductsQueueSync implements ProcessAction {
             } else {
                 return new MessageInf(MessageInf.SGN_SUCCESS, AppLocal.getIntString("message.syncproductsok"), AppLocal.getIntString("message.syncproductsinfo", productsSynch, customersSynch));
             }
-        } catch (ServiceException | JMSException e) {
+        } catch (/*ServiceException |*/ JMSException e) {
             throw new BasicException(AppLocal.getIntString("message.serviceexception"), e);
         } catch (MalformedURLException e) {
             throw new BasicException(AppLocal.getIntString("message.malformedurlexception"), e);

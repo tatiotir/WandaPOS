@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>Wanda POS ActiveMQ Configuration</comment>
+        <entry key="id">11</entry>
+	<entry key="pos">HQ</entry>
+	<entry key="activemq-brokerUrl">tcp://localhost:61616</entry>
+	<entry key="activemq-username">admin</entry>
+	<entry key="activemq-password"></entry>
+	<entry key="orders-queue">Orders</entry>
+	<entry key="products-queue">Products</entry>
+	<entry key="customers-queue">Customers</entry>
+</properties>

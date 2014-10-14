@@ -93,7 +93,7 @@ COLLECTION=resources;{_id : 57, NAME : Ticket.Line, RESTYPE : 0, CONTENT : $FILE
 COLLECTION=resources;{_id : 58, NAME : Ticket.TicketLineTaxesIncluded, RESTYPE : 0, CONTENT : $FILE{/com/openbravo/pos/templates/Ticket.TicketLineTaxesIncluded.xml}}
 COLLECTION=resources;{_id : 59, NAME : Window.Logo, RESTYPE : 1, CONTENT : $FILE{/com/openbravo/pos/templates/window.logo.png}}
 COLLECTION=resources;{_id : 60, NAME : Window.Title, RESTYPE : 0, CONTENT : $FILE{/com/openbravo/pos/templates/Window.Title.txt}}
-COLLECTION=resources;{_id : 61, NAME : openbravo.properties, RESTYPE : 0, CONTENT : $FILE{/com/openbravo/pos/templates/openbravo.properties.txt}}
+COLLECTION=resources;{_id : 61, NAME : wandapos.properties, RESTYPE : 0, CONTENT : $FILE{/com/openbravo/pos/templates/wandapos.properties.txt}}
 
 COLLECTION=categories;{_id : 000, NAME : Category Standard}
 
