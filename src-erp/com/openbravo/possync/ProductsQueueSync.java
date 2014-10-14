@@ -115,7 +115,6 @@ public class ProductsQueueSync implements ProcessAction {
             ArrayList<ProductPlus[]> productsList = new ArrayList<>();
             for (int i = 0; i < productsMessageList.size(); ++i)
             {
-                System.out.println("xml : " + ((TextMessage)productsMessageList.get(i)).getText());
                 productsList.add(importQueue2Products(((TextMessage)productsMessageList.get(i)).getText()));
             }
             
