@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-	<comment>Wanda POS ActiveMQ Configuration</comment>
-        <entry key="id">11</entry>
+	<comment>Wanda POS</comment>
+    <entry key="id">11</entry>
 	<entry key="pos">HQ</entry>
+	
+	<comment>Wanda POS ActiveMQ Configuration</comment>
 	<entry key="activemq-brokerUrl">tcp://localhost:61616</entry>
 	<entry key="activemq-username">admin</entry>
 	<entry key="activemq-password"></entry>
