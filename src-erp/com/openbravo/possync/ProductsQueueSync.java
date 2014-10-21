@@ -27,6 +27,11 @@ package com.openbravo.possync;
 
 import com.openbravo.activemq.ActiveMQClient;
 import com.openbravo.basic.BasicException;
+import com.openbravo.compiere.model.MBPartner;
+import com.openbravo.compiere.model.MLocation;
+import com.openbravo.compiere.model.MProduct;
+import com.openbravo.compiere.model.MProductPrice;
+import com.openbravo.compiere.model.MUser;
 import com.openbravo.data.gui.MessageInf;
 import com.openbravo.data.loader.ImageUtils;
 import com.openbravo.pos.customers.CustomerInfoExt;
@@ -43,8 +48,12 @@ import com.openbravo.ws.externalsales.Category;
 import com.openbravo.ws.externalsales.Product;
 import com.openbravo.ws.externalsales.ProductPlus;
 import com.openbravo.ws.externalsales.Tax;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,16 +64,12 @@ import javax.jms.TextMessage;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.rpc.ServiceException;
-import com.openbravo.compiere.model.MBPartner;
-import com.openbravo.compiere.model.MLocation;
-import com.openbravo.compiere.model.MProduct;
-import com.openbravo.compiere.model.MProductPrice;
-import com.openbravo.compiere.model.MUser;
+import javax.xml.transform.dom.DOMSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class ProductsQueueSync implements ProcessAction {
@@ -96,6 +101,8 @@ public class ProductsQueueSync implements ProcessAction {
 
     @Override
     public MessageInf execute() throws BasicException {
+        int productsSynch = 0;
+        int customersSynch = 0;
         try {
             if (externalsales == null) {
                 externalsales = new ExternalSalesHelper(dlsystem);
@@ -105,11 +112,27 @@ public class ProductsQueueSync implements ProcessAction {
             ActiveMQClient mqClient = new ActiveMQClient(externalsales.getActivemqBrokerUrl(), externalsales.getActivemqUsername(), externalsales.getActivemqPassword());
 
             if (!mqClient.init()) {
-                return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.exception"));
+                return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.serviceexception"));
             }
-
-            int productsSynch = 0;
-            int customersSynch = 0;
+            
+            ArrayList<Message> customersMessageList = mqClient.consumeAllMessages(externalsales.getM_iERPPos() + externalsales.getCustomersQueue());
+            ArrayList<CustomerInfoExt[]> customersList = new ArrayList<>();
+            for (int i = 0; i < customersMessageList.size(); ++i)
+            {
+                customersList.add(importQueue2Customers(((TextMessage)customersMessageList.get(i)).getText()));
+            }
+            
+            if (!customersList.isEmpty()) {
+                dlintegration.syncCustomersBefore();
+                for (CustomerInfoExt[] customers : customersList)
+                {
+                    for (CustomerInfoExt customer : customers) {
+                        // Synch this customer
+                        dlintegration.syncCustomer(customer);
+                        ++customersSynch;
+                    }
+                }
+            }
             
             ArrayList<Message> productsMessageList = mqClient.consumeAllMessages(externalsales.getM_iERPPos() + externalsales.getProductsQueue());
             ArrayList<ProductPlus[]> productsList = new ArrayList<>();
@@ -173,47 +196,24 @@ public class ProductsQueueSync implements ProcessAction {
 // datalogic.syncProductsAfter();
             }
 
-            ArrayList<Message> customersMessageList = mqClient.consumeAllMessages(externalsales.getM_iERPPos() + externalsales.getCustomersQueue());
-            ArrayList<CustomerInfoExt[]> customersList = new ArrayList<>();
-            for (int i = 0; i < customersMessageList.size(); ++i)
-            {
-                customersList.add(importQueue2Customers(((TextMessage)customersMessageList.get(i)).getText()));
-            }
-            
-            if (!customersList.isEmpty()) {
-                dlintegration.syncCustomersBefore();
-                for (CustomerInfoExt[] customers : customersList)
-                {
-                    for (CustomerInfoExt customer : customers) {
-                        // Synch this customer
-                        dlintegration.syncCustomer(customer);
-                        ++customersSynch;
-                    }
-                }
-            }
-
             if (productsList.isEmpty() && customersList.isEmpty()) {
                 return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.zeroproducts"));
-            } else {
-                return new MessageInf(MessageInf.SGN_SUCCESS, AppLocal.getIntString("message.syncproductsok"), AppLocal.getIntString("message.syncproductsinfo", productsSynch, customersSynch));
             }
         } catch (/*ServiceException |*/ JMSException e) {
             throw new BasicException(AppLocal.getIntString("message.serviceexception"), e);
-        } catch (MalformedURLException e) {
-            throw new BasicException(AppLocal.getIntString("message.malformedurlexception"), e);
         } catch (SAXException | IOException | ParserConfigurationException e) {
+            throw new BasicException(e);
         }
-        return new MessageInf(MessageInf.SGN_CAUTION, AppLocal.getIntString("message.zerocustomers"));
+        return new MessageInf(MessageInf.SGN_SUCCESS, AppLocal.getIntString("message.syncproductsok"), AppLocal.getIntString("message.syncproductsinfo", productsSynch, customersSynch));
     }
 
     private ProductPlus[] importQueue2Products(String productsXML) throws SAXException, IOException, ParserConfigurationException {
-
         if (productsXML.equals("")) {
             return new ProductPlus[0];
         }
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(new ByteArrayInputStream(productsXML.getBytes()));
+        Document doc = db.parse(new InputSource(new StringReader(productsXML)));
         Element docEle = doc.getDocumentElement();
         NodeList records = docEle.getElementsByTagName("detail");
 
@@ -271,17 +271,18 @@ public class ProductsQueueSync implements ProcessAction {
         if (customersXML.equals("")) {
             return new CustomerInfoExt[0];
         }
+                
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(new ByteArrayInputStream(customersXML.getBytes()));
-
+        Document doc = db.parse(new InputSource(new StringReader(customersXML)));
+        
         Element docEle = doc.getDocumentElement();
         NodeList records = docEle.getElementsByTagName("detail");
         CustomerInfoExt[] customer = new CustomerInfoExt[records.getLength()];
 
         for (int i = 0; i < records.getLength(); i++) {
             if (!records.item(i).getFirstChild().getTextContent().equals(MBPartner.Table_Name)) {
-                continue;
+                break;
             }
             customer[i] = new CustomerInfoExt("");
             NodeList details = records.item(i).getChildNodes();
@@ -337,6 +338,8 @@ public class ProductsQueueSync implements ProcessAction {
                         break;
                     case MUser.COLUMNNAME_Phone2 :
                         customer[i].setPhone2(n.getTextContent());
+                        break;
+                    default:
                         break;
                 }
             }

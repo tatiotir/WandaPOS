@@ -76,7 +76,7 @@ public class OrdersQueueSync implements ProcessAction {
             ActiveMQClient mqClient = new ActiveMQClient(externalsales.getActivemqBrokerUrl(), externalsales.getActivemqUsername(), externalsales.getActivemqPassword());
             
             if (!mqClient.init())
-                return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.exception"));
+                return new MessageInf(MessageInf.SGN_NOTICE, AppLocal.getIntString("message.serviceexception"));
             
             if (mqClient.sendMessage(transformTickets(ticketlist), externalsales.getOrdersQueue())) {
                 dlintegration.execTicketUpdate();
