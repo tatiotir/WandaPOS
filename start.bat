@@ -1,25 +1,26 @@
 @echo off
-REM    uniCenta oPOS Touch Friendly Point of Sales designed for Touch Screen
-REM    Copyright (c) 2009-20143 uniCenta
-REM    https://sourceforge.net/projects/wandaposdapos/
+REM    Wanda POS - Africa's Gift to the World
+REM    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Wanda POS works
+REM    www.erp-university-africa.com
+REM	   http://sourceforge.net/projects/wandaposdapos
 REM
-REM    This file is part of uniCenta oPOS
+REM    This file is part of Wanda POS.
 REM
-REM    uniCenta oPOS is free software: you can redistribute it and/or modify
+REM    Wanda POS is free software: you can redistribute it and/or modify
 REM    it under the terms of the GNU General Public License as published by
 REM    the Free Software Foundation, either version 3 of the License, or
 REM    (at your option) any later version.
 REM
-REM    uniCenta oPOS is distributed in the hope that it will be useful,
+REM    Wanda POS is distributed in the hope that it will be useful,
 REM    but WITHOUT ANY WARRANTY; without even the implied warranty of
 REM    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 REM    GNU General Public License for more details.
 REM
 REM    You should have received a copy of the GNU General Public License
-REM    along with uniCenta oPOS.  If not, see http://www.gnu.org/licenses/>
-REM
+REM    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
+
 set DIRNAME=%~dp0
-set CP="%DIRNAME%unicentaopos.jar"
+set CP="%DIRNAME%wandapos.jar"
 set CP=%CP%;"%DIRNAME%lib/jasperreports-4.5.1.jar"
 set CP=%CP%;"%DIRNAME%lib/jcommon-1.0.15.jar"
 set CP=%CP%;"%DIRNAME%lib/jfreechart-1.0.12.jar"
@@ -40,6 +41,7 @@ set CP=%CP%;"%DIRNAME%lib/jpos1121.jar"
 set CP=%CP%;"%DIRNAME%lib/swingx-all-1.6.4.jar"
 set CP=%CP%;"%DIRNAME%lib/substance.jar"
 set CP=%CP%;"%DIRNAME%lib/substance-swingx.jar"
+set CP=%CP%;"%DIRNAME%lib/substance-extras.jar"
 
 REM Apache Axis SOAP libraries.
 set CP=%CP%;"%DIRNAME%lib/axis.jar"
@@ -51,4 +53,4 @@ set CP=%CP%;"%DIRNAME%lib/commons-logging-1.1.jar"
 set CP=%CP%;"%DIRNAME%locales/"
 set CP=%CP%;"%DIRNAME%reports/"
 
-start /B javaw -cp %CP% -Djava.library.path="%DIRNAME%lib/Windows/i368-mingw32" -Ddirname.path="%DIRNAME%./" -splash:unicenta_splash_dark.png com.openbravo.pos.forms.StartPOS %1
+start javaw -cp %CP% -Djava.library.path="%DIRNAME%lib/Windows/i368-mingw32" -Ddirname.path="%DIRNAME%./" -splash:wandapos-splash.png com.openbravo.pos.forms.StartPOS %1

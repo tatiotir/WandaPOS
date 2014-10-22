@@ -1,7 +1,9 @@
 #!/bin/sh
-#    Wanda POS Touch Friendly Point of Sale designed for Touch Screen
-#    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Openbravo POS works
-#    https://sourceforge.net/projects/wandaposdapos/
+
+#    Wanda POS - Africa's Gift to the World
+#    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Wanda POS works
+#    www.erp-university-africa.com
+#	 http://sourceforge.net/projects/wandaposdapos
 #
 #    This file is part of Wanda POS.
 #
@@ -19,7 +21,7 @@
 #    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
 
 DIRNAME=`dirname $0`
-CP=$DIRNAME/unicentaopos.jar
+CP=$DIRNAME/wandapos.jar
 CP=$CP:$DIRNAME/locales/
 CP=$CP:$DIRNAME/lib/substance.jar
-java -cp $CP -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel com.openbravo.pos.config.JFrmConfig
+java -cp $CP -Djava.util.logging.config.file=$DIRNAME/logging.properties -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel com.openbravo.pos.config.JFrmConfig
