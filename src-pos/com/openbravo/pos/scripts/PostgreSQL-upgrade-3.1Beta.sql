@@ -1,4 +1,4 @@
---    Wanda POS - Touch Friendly Point Of Sale
+--    Wanda POS - Africa's Gift to the World
 --    Copyright (C) 2009-2014 unCenta
 --    http://www.unicenta.net
 --

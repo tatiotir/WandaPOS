@@ -1,5 +1,5 @@
---    Wanda POS - Touch Friendly Point Of Sale
---    Copyright (c) 2009-2014 uniCenta
+--    Wanda POS - Africa's Gift to the World
+--    Copyright (c) 2014-2015 Wanda POS
 --    https://sourceforge.net/projects/wandaposdapos/
 --
 --    This file is part of Wanda POS.
@@ -18,7 +18,7 @@
 --    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
 
 -- Database create script for MySQL
--- Copyright (c) 2009-2014 uniCenta
+-- Copyright (c) 2014-2015 Wanda POS
 
 ALTER TABLE PEOPLE DROP CONSTRAINT PEOPLE_FK_1;
 ALTER TABLE ATTRIBUTEINSTANCE DROP CONSTRAINT ATTINST_SET;

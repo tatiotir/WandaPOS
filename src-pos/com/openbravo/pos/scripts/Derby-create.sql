@@ -1,5 +1,5 @@
---    Wanda POS - Touch Friendly Point Of Sale
---    Copyright (C) 2009-2014 uniCenta
+--    Wanda POS - Africa's Gift to the World
+--    Copyright (C) 2014-2015 Wanda POS
 --    https://sourceforge.net/projects/wandaposdapos/
 --
 --    This file is part of Wanda POS.
@@ -18,7 +18,7 @@
 --    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
 
 -- Database create script for DERBY
--- Copyright (c) 2009-2014 uniCenta
+-- Copyright (c) 2014-2015 Wanda POS
 -- v3.70
 
 CREATE TABLE APPLICATIONS (

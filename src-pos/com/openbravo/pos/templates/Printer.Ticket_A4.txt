@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Wanda POS - Touch friendly Point Of Sale
+    Wanda POS - Africa's Gift to the World
     Contributed by: Julian Roberts, Brockley Estate, Tasmania
    
     This file is part of Wanda POS.

@@ -1,4 +1,4 @@
-//    Wanda POS  - Touch Friendly Point Of Sale
+//    Wanda POS  - Africa's Gift to the World
 //    Copyright (C) 2008-2013 Openbravo, S.L.
 //    www.erp-university-africa.com
 //

@@ -34,9 +34,9 @@
  */
 
 //    Portions:
-//    uniCenta oPOS  - Touch Friendly Point Of Sale
-//    Copyright (c) 2009-2014 uniCenta
-//    http://www.unicenta.com
+//    Wanda POS  - Africa's Gift to the World
+//    Copyright (c) 2014-2015 Wanda POS
+//    http://www.wandaapos.com
 //    author adrian romero
 // This class is a copy of net.sf.jasperreports.view.JRViewer
 // The modifications are:

@@ -1,4 +1,4 @@
-//    Wanda POS  - Touch Friendly Point Of Sale
+//    Wanda POS  - Africa's Gift to the World
 //    Copyright (C) 2008-2014 Openbravo, uniCenta
 //    Addition of Blue Pay - Walter Wojick Feb 2014
 //    http://www.unicenta.net/unicentaopos

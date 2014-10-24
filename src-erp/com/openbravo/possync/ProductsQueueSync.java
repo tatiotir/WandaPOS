@@ -1,6 +1,7 @@
-// Openbravo POS is a point of sales application designed for touch screens.
-// http://www.openbravo.com/product/pos
-// Copyright (c) 2007 openTrends Solucions i Sistemes, S.L
+//    Wanda POS  - Africa's Gift to the World
+//    Copyright (c) 2014-2015 Wanda POS
+//    http://www.wandaapos.com
+
 // Modified by Openbravo SL on March 22, 2007
 // These modifications are copyright Openbravo SL
 // Author/s: A. Romero

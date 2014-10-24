@@ -1,5 +1,5 @@
-//    Wanda POS  - Touch Friendly Point Of Sale
-//    Copyright (c) 2009-2014 uniCenta & previous Openbravo POS works
+//    Wanda POS  - Africa's Gift to the World
+//    Copyright (c) 2014-2015 Wanda POS & previous Openbravo POS works
 //    www.erp-university-africa.com
 //
 //    This file is part of Wanda POS

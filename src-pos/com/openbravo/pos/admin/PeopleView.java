@@ -1,5 +1,5 @@
 //    Wanda POS - Africa's Gift to the World
-//    Copyright (c) 2009-2014 uniCenta
+//    Copyright (c) 2014-2015 Wanda POS
 //    www.erp-university-africa.com
 //
 //    This file is part of Wanda POS

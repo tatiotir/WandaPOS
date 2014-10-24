@@ -1,4 +1,4 @@
-//    Wanda POS  - Touch Friendly Point Of Sale
+//    Wanda POS  - Africa's Gift to the World
 //    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Openbravo POS works
 //    www.erp-university-africa.com
 //
@@ -16,7 +16,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
-//    Wanda POS  - Touch Friendly Point Of Sale
+//    Wanda POS  - Africa's Gift to the World
 //    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Openbravo POS works
 //    www.erp-university-africa.com
 //
@@ -34,7 +34,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
-//    Wanda POS  - Touch Friendly Point Of Sale
+//    Wanda POS  - Africa's Gift to the World
 //    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Openbravo POS works
 //    www.erp-university-africa.com
 //
@@ -52,7 +52,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
-//    Wanda POS  - Touch Friendly Point Of Sale
+//    Wanda POS  - Africa's Gift to the World
 //    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Openbravo POS works
 //    www.erp-university-africa.com
 //

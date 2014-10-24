@@ -34,7 +34,7 @@ public class URLTest {
 
                 JEditorPane jep = new JEditorPane();
                 jep.setContentType("text/html");//set content as html
-                jep.setText("Welcome to <a href='http://www.unicenta.com/'>uniCenta</a>.");
+                jep.setText("Welcome to <a href='http://www.wandaapos.com/'>uniCenta</a>.");
 
                 jep.setEditable(false);//so its not editable
                 jep.setOpaque(false);//so we dont see whit background
