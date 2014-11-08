@@ -138,7 +138,7 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
         t.execute();
     }
 
-	// When you press pos synch for the same queue, it will produce an error
+    // Eyog Yvon Leonce When you press pos synch for the same queue, it will produce an error
     // previous version delete from products_cat
     public void syncProductsBefore() throws BasicException {
         new StaticSentence(s, "").exec();
@@ -324,7 +324,7 @@ public class DataLogicIntegration extends BeanFactoryDataSingle {
                 // Insert in catalog
                 new StaticSentence(
                         s,
-                        // Tatioti Mbogning Raoul - Insert into the product catalog if the products aren't already there,
+                        // Eyog Yvon Leonce - Insert into the product catalog if the products aren't already there
                         "INSERT IGNORE INTO PRODUCTS_CAT(PRODUCT,CATORDER) SELECT ?, NULL FROM PRODUCTS_CAT WHERE NOT EXISTS (SELECT 1 FROM PRODUCTS_CAT WHERE PRODUCT = ?)",
                         // "INSERT INTO PRODUCTS_CAT (PRODUCT,CATORDER) VALUES (?, NULL)",
                         new SerializerWriteBasic(Datas.STRING, Datas.STRING)

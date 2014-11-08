@@ -3,10 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-pos/com/openbravo/pos/forms/JPrincipalApp.java</file>
+            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-pos/com/openbravo/pos/forms/JRootApp.java</file>
             <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/possync/ExternalSalesHelper.java</file>
             <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/possync/OrdersQueueSync.java</file>
             <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/activemq/ActiveMQClient.java</file>
-            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-erp/com/openbravo/possync/ProductsQueueSync.java</file>
+            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-pos/com/openbravo/pos/sales/JPanelTicket.java</file>
+            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-pos/com/openbravo/pos/templates/Menu.Root.txt</file>
+            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-pos/com/openbravo/pos/catalog/JProductsSelector.java</file>
+            <file>file:/D:/IT%20Kamer/IT-Kamer%20Project/Wanda-POS/src-pos/com/openbravo/pos/sales/JPanelTicketSales.java</file>
         </group>
     </open-files>
 </project-private>
