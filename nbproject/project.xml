@@ -5,6 +5,7 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>Wanda-POS</name>
             <source-roots>
+                <root id="src.src-webservices.dir"/>
                 <root id="src.locales.dir"/>
                 <root id="src.reports.dir"/>
                 <root id="src.src-erp.dir"/>
