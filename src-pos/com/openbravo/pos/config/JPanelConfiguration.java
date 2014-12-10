@@ -30,6 +30,10 @@ import javax.swing.*;
 /**
  *
  * @author adrianromero
+ * 
+ * Contributor Ing. Tatioti Mbogning Raoul
+ * Add JPanelConfigServer to configure Tomcat Server
+ * 
  */
 public class JPanelConfiguration extends JPanel implements JPanelView {
         
@@ -56,8 +60,6 @@ public class JPanelConfiguration extends JPanel implements JPanelView {
      */
     public JPanelConfiguration(AppProperties props) {
         
-        
-        
         initComponents();
         config = new AppConfig(props.getConfigFile());
         // Inicio lista de paneles
@@ -65,6 +67,11 @@ public class JPanelConfiguration extends JPanel implements JPanelView {
         
         PanelConfig panel;
         
+        // Add By Ing. Tatioti Mbogning Raoul
+        panel = new JPanelConfigServer();
+        m_panelconfig.add(panel);
+        jPanelServer.add(panel.getConfigComponent());
+                
         panel = new JPanelConfigDatabase();
         m_panelconfig.add(panel);
         jPanelDatabase.add(panel.getConfigComponent());
@@ -92,8 +99,7 @@ public class JPanelConfiguration extends JPanel implements JPanelView {
         
         panel = new JPanelTicketSetup();
         m_panelconfig.add(panel);
-        jPanelTicketSetup.add(panel.getConfigComponent());
-        
+        jPanelTicketSetup.add(panel.getConfigComponent()); 
         
         //m_panelconfig.add(new JPanelConfigGeneral());
         //m_panelconfig.add(new JPanelConfigLocale());
@@ -205,6 +211,7 @@ public class JPanelConfiguration extends JPanel implements JPanelView {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanelDatabase = new javax.swing.JPanel();
+        jPanelServer = new javax.swing.JPanel();
         jPanelGeneral = new javax.swing.JPanel();
         jPanelLocale = new javax.swing.JPanel();
         jPanelPayment = new javax.swing.JPanel();
@@ -227,6 +234,23 @@ public class JPanelConfiguration extends JPanel implements JPanelView {
         jPanelDatabase.setPreferredSize(new java.awt.Dimension(0, 400));
         jPanelDatabase.setLayout(new javax.swing.BoxLayout(jPanelDatabase, javax.swing.BoxLayout.LINE_AXIS));
         jTabbedPane1.addTab("Database Setup", jPanelDatabase);
+
+        jPanelServer.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jPanelServer.setPreferredSize(new java.awt.Dimension(0, 400));
+        jPanelServer.setLayout(new javax.swing.BoxLayout(jPanelServer, javax.swing.BoxLayout.LINE_AXIS));
+
+        javax.swing.GroupLayout jPanelServerLayout = new javax.swing.GroupLayout(jPanelServer);
+        jPanelServer.setLayout(jPanelServerLayout);
+        jPanelServerLayout.setHorizontalGroup(
+            jPanelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 735, Short.MAX_VALUE)
+        );
+        jPanelServerLayout.setVerticalGroup(
+            jPanelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 421, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Server Setup", jPanelServer);
 
         jPanelGeneral.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jPanelGeneral.setPreferredSize(new java.awt.Dimension(0, 400));
@@ -359,6 +383,7 @@ public class JPanelConfiguration extends JPanel implements JPanelView {
     private javax.swing.JPanel jPanelLocale;
     private javax.swing.JPanel jPanelPayment;
     private javax.swing.JPanel jPanelPeripheral;
+    private javax.swing.JPanel jPanelServer;
     private javax.swing.JPanel jPanelSystem;
     private javax.swing.JPanel jPanelTicketSetup;
     private javax.swing.JTabbedPane jTabbedPane1;

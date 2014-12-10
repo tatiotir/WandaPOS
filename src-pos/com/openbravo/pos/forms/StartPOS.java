@@ -19,6 +19,7 @@
 
 package com.openbravo.pos.forms;
 
+import cm.wandapos.webservices.implementation.ModelWebService;
 import com.openbravo.format.Formats;
 import com.openbravo.pos.instance.InstanceQuery;
 import java.rmi.NotBoundException;
@@ -29,6 +30,7 @@ import java.util.logging.Logger;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.xml.ws.Endpoint;
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.SubstanceSkin;
 

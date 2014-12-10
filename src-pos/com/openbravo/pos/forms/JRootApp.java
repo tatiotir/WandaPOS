@@ -18,6 +18,7 @@
 //    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>
 package com.openbravo.pos.forms;
 
+import cm.wandapos.webservices.implementation.ModelWebService;
 import com.openbravo.basic.BasicException;
 import com.openbravo.beans.JFlowPanel;
 import com.openbravo.beans.JPasswordDialog;
@@ -54,6 +55,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import javax.swing.*;
+import javax.xml.ws.Endpoint;
 
 /**
  *
@@ -159,7 +161,8 @@ public class JRootApp extends JPanel implements AppView {
             JMessageDialog.showMessage(this, new MessageInf(MessageInf.SGN_DANGER, e.getMessage(), e));
             return false;
         }
-
+        
+        
         m_dlSystem = (DataLogicSystem) getBean("com.openbravo.pos.forms.DataLogicSystem");
 
         // Create or upgrade the database if database version is not the expected
