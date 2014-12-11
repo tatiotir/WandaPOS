@@ -34,21 +34,21 @@ import javax.jws.soap.SOAPBinding.Style;
  * @author Ing. Tatioti Mbogning Raoul
  */
 
-@WebService(name = "WandaPOS Model Oriented Web Services", targetNamespace = "")
+@WebService(name = "WandaPOS Model Oriented Web Services", targetNamespace = "http://wandapos.com")
 @SOAPBinding(style=Style.RPC, use = SOAPBinding.Use.LITERAL, parameterStyle = SOAPBinding.ParameterStyle.WRAPPED)
 public interface IModelWebService {
 
     /* Model oriented web services */ 
 
-    @WebResult(name = "readDataResponse")
+    @WebResult(name = "DatabaseDocument")
     @WebMethod(operationName = "readData")
     public DatabaseDocument readData(ModelCRUDRequest request);
     
-    @WebResult(name = "queryDataResponse")
+    @WebResult(name = "DatabaseDocument")
     @WebMethod(operationName = "queryData")
     public DatabaseDocument queryData(ModelCRUDRequest request);
     
-    @WebResult(name = "createDataResponse")
+    @WebResult(name = "standardResponse")
     @WebMethod(operationName = "createData")
     public StandardResponseDocument createData(ModelCRUDRequest request);
 }

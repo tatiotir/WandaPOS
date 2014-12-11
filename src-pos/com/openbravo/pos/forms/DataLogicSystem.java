@@ -60,6 +60,9 @@ public class DataLogicSystem extends BeanFactoryDataSingle {
      *
      */
     protected SentenceFind m_peoplebycard;
+    
+    // Added by Ing. Tatioti Mbogning Raoul
+    protected SentenceFind m_peopleByNamePassword;
 
     /**
      *
@@ -392,6 +395,9 @@ public class DataLogicSystem extends BeanFactoryDataSingle {
             //******************************************************************      
             m_peoplevisible = new StaticSentence(s, "SELECT ID, NAME, APPPASSWORD, CARD, ROLE, IMAGE FROM PEOPLE WHERE VISIBLE = " + s.DB.TRUE() + " ORDER BY NAME", null, peopleread);
 
+            // Added by Ing. Tatioti Mbogning Raoul
+            m_peopleByNamePassword = new PreparedSentence(s, "SELECT ID, NAME, APPPASSWORD, CARD, ROLE, IMAGE FROM PEOPLE WHERE NAME = ? AND APPPASSWORD = ?", SerializerWriteString.INSTANCE, peopleread);
+            
             m_peoplebycard = new PreparedSentence(s, "SELECT ID, NAME, APPPASSWORD, CARD, ROLE, IMAGE FROM PEOPLE WHERE CARD = ? AND VISIBLE = " + s.DB.TRUE(), SerializerWriteString.INSTANCE, peopleread);
 
             m_resourcebytes = new PreparedSentence(s, "SELECT CONTENT FROM RESOURCES WHERE NAME = ?", SerializerWriteString.INSTANCE, SerializerReadBytes.INSTANCE);

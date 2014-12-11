@@ -21,6 +21,7 @@ package cm.wandapos.webservices.data;
 
 import cm.wandapos.webservices.model.LoginRequest;
 import com.openbravo.pos.forms.AppView;
+import com.openbravo.pos.forms.DataLogicSystem;
 
 /**
  *
@@ -35,6 +36,8 @@ public abstract class AbstractWebService {
     }
     
     protected String login(LoginRequest loginRequest, String webService, String method, String serviceType) {
+        DataLogicSystem dataLogicSystem = (DataLogicSystem)m_appView.getBean("com.openbravo.pos.forms.DataLogicSystem");
+        
         return "";
     }
 

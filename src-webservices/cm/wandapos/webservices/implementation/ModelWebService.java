@@ -44,18 +44,16 @@ public class ModelWebService extends AbstractWebService implements IModelWebServ
 
     @Override
     public DatabaseDocument readData(ModelCRUDRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new DatabaseDocumentError();
     }
 
     @Override
     public DatabaseDocument queryData(ModelCRUDRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new DatabaseDocument();
     }
 
     @Override
     public StandardResponseDocument createData(ModelCRUDRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
+    }   
 }
