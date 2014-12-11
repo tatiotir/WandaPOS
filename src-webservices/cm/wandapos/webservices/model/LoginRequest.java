@@ -1,8 +1,18 @@
 package cm.wandapos.webservices.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "loginRequest")
 public class LoginRequest {
 
+    @XmlElement(name = "user", required = true)
     private String m_user;
+    
+    @XmlElement(name = "pass", required = true)
     private String m_pass;
     
     public LoginRequest() {

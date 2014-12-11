@@ -18,6 +18,7 @@
 //    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>
 package com.openbravo.pos.forms;
 
+import cm.wandapos.webservices.apache.tomcat.TomcatEmbeddedServer;
 import cm.wandapos.webservices.implementation.ModelWebService;
 import com.openbravo.basic.BasicException;
 import com.openbravo.beans.JFlowPanel;
@@ -100,6 +101,8 @@ public class JRootApp extends JPanel implements AppView {
     private String sJLVersion;
     private DatabaseMetaData md;
 
+    private TomcatEmbeddedServer m_tomcatServer;
+
     static {
         initOldClasses();
     }
@@ -161,8 +164,7 @@ public class JRootApp extends JPanel implements AppView {
             JMessageDialog.showMessage(this, new MessageInf(MessageInf.SGN_DANGER, e.getMessage(), e));
             return false;
         }
-        
-        
+
         m_dlSystem = (DataLogicSystem) getBean("com.openbravo.pos.forms.DataLogicSystem");
 
         // Create or upgrade the database if database version is not the expected
@@ -202,21 +204,21 @@ public class JRootApp extends JPanel implements AppView {
 //                            return false;
 //                        }
 //                    } else {
-                        try {
-                            BatchSentence bsentence = new BatchSentenceResource(session, sScript);
-                            bsentence.putParameter("APP_ID", Matcher.quoteReplacement(AppLocal.APP_ID));
-                            bsentence.putParameter("APP_NAME", Matcher.quoteReplacement(AppLocal.APP_NAME));
-                            bsentence.putParameter("APP_VERSION", Matcher.quoteReplacement(AppLocal.APP_VERSION));
+                    try {
+                        BatchSentence bsentence = new BatchSentenceResource(session, sScript);
+                        bsentence.putParameter("APP_ID", Matcher.quoteReplacement(AppLocal.APP_ID));
+                        bsentence.putParameter("APP_NAME", Matcher.quoteReplacement(AppLocal.APP_NAME));
+                        bsentence.putParameter("APP_VERSION", Matcher.quoteReplacement(AppLocal.APP_VERSION));
 
-                            java.util.List l = bsentence.list();
-                            if (l.size() > 0) {
-                                JMessageDialog.showMessage(this, new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("Database.ScriptWarning"), l.toArray(new Throwable[l.size()])));
-                            }
-                        } catch (BasicException e) {
-                            JMessageDialog.showMessage(this, new MessageInf(MessageInf.SGN_DANGER, AppLocal.getIntString("Database.ScriptError"), e));
-                            session.close();
-                            return false;
+                        java.util.List l = bsentence.list();
+                        if (l.size() > 0) {
+                            JMessageDialog.showMessage(this, new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("Database.ScriptWarning"), l.toArray(new Throwable[l.size()])));
                         }
+                    } catch (BasicException e) {
+                        JMessageDialog.showMessage(this, new MessageInf(MessageInf.SGN_DANGER, AppLocal.getIntString("Database.ScriptError"), e));
+                        session.close();
+                        return false;
+                    }
 //                    }
                 } else {
                     session.close();
@@ -239,11 +241,11 @@ public class JRootApp extends JPanel implements AppView {
 //        }
 //        }catch (Exception e){}          
 //        if (!AppLocal.APP_VERSIONJL.equals(sJLVersion)) {
-            // Create or upgrade database
+        // Create or upgrade database
 //            String sScript = sJLVersion == null 
 //                    ? m_dlSystem.getInitScript() + "-createjl.sql"
 //                    : m_dlSystem.getInitScript() + "-updater-" + sJLVersion + ".sql";
-             // Create or upgrade script exists.
+        // Create or upgrade script exists.
 //             if (JOptionPane.showConfirmDialog(this
 //                        , AppLocal.getIntString(sJLVersion == null ? "message.createdatabasejl" : "message.updatedatabasejl")
 //                        , AppLocal.getIntString("message.title")
@@ -347,7 +349,7 @@ public class JRootApp extends JPanel implements AppView {
             }
         }
 
- // change text under logo
+        // change text under logo
         String newText = m_props.getProperty("start.text");
         if (newText != null) {
             if (newText.equals("")) {
@@ -377,7 +379,29 @@ public class JRootApp extends JPanel implements AppView {
 
         showLogin();
 
+        // Create and start the Tomcat Server
+        startTomcatServer();
+        
         return true;
+    }
+    
+    /**
+     * Added by Ing. Tatioti Mbogning Raoul
+     * Create an instance of the Tomcat Server for the web servie module
+     * @return boolean
+     */
+    private void startTomcatServer() {
+        m_tomcatServer = new TomcatEmbeddedServer(this);
+        m_tomcatServer.start();
+    }
+    
+    /**
+     * Added by Ing. Tatioti Mbogning Raoul
+     * Stop the Tomcat Server
+     * @return
+     */
+    private void stopTomcatServer() {
+        m_tomcatServer.stop();
     }
 
     private String readDataBaseVersion() {
@@ -747,6 +771,9 @@ public class JRootApp extends JPanel implements AppView {
     public boolean closeAppView() {
 
         if (m_principalapp == null) {
+            
+            // Stop the Tomcat server before close the app
+            stopTomcatServer();
             return true;
         } else if (!m_principalapp.deactivate()) {
             return false;

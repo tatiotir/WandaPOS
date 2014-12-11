@@ -13,7 +13,6 @@
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //    GNU General Public License for more details.
-//
 //    You should have received a copy of the GNU General Public License
 //    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
 package com.openbravo.pos.config;
@@ -78,7 +77,7 @@ public class JPanelConfigServer extends javax.swing.JPanel implements PanelConfi
     @Override
     public void saveProperties(AppConfig config) {
         config.setProperty("tomcat.host", jtxtServerHost.getText());
-        config.setProperty("tomcat.host", jtxtServerPort.getText());
+        config.setProperty("tomcat.port", jtxtServerPort.getText());
         dirty.setDirty(false);
     }
 
@@ -98,6 +97,7 @@ public class JPanelConfigServer extends javax.swing.JPanel implements PanelConfi
         jtxtServerHost = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jtxtServerPort = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
 
         setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         setPreferredSize(new java.awt.Dimension(650, 500));
@@ -123,6 +123,10 @@ public class JPanelConfigServer extends javax.swing.JPanel implements PanelConfi
             }
         });
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("pos_messages"); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), bundle.getString("label.tabledisplayoptions"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 12), new java.awt.Color(102, 102, 102))); // NOI18N
+        jPanel3.setLayout(null);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -138,7 +142,7 @@ public class JPanelConfigServer extends javax.swing.JPanel implements PanelConfi
                         .addContainerGap()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)
-                        .addComponent(jtxtServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jtxtServerPort, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 420, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -168,6 +172,7 @@ public class JPanelConfigServer extends javax.swing.JPanel implements PanelConfi
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField jtxtServerHost;
     private javax.swing.JTextField jtxtServerPort;
     // End of variables declaration//GEN-END:variables

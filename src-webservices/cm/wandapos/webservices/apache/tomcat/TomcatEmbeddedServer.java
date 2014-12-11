@@ -47,7 +47,6 @@ public class TomcatEmbeddedServer {
         logger.log(Level.INFO, "Tomcat Server Host : {0}", m_app.getProperties().getProperty("tomcat.host"));
         logger.log(Level.INFO, "Tomcat Server Port : {0}", m_app.getProperties().getProperty("tomcat.port"));
         
-        // P
         m_endPoint = Endpoint.publish("http://" + m_app.getProperties().getProperty("tomcat.host") + ":" + 
                 m_app.getProperties().getProperty("tomcat.port") + "/WandaPOS/WebService", new ModelWebService(m_app));
     }

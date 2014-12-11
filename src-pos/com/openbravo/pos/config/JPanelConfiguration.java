@@ -66,15 +66,15 @@ public class JPanelConfiguration extends JPanel implements JPanelView {
         m_panelconfig = new ArrayList<>();
         
         PanelConfig panel;
+                
+        panel = new JPanelConfigDatabase();
+        m_panelconfig.add(panel);
+        jPanelDatabase.add(panel.getConfigComponent());
         
         // Add By Ing. Tatioti Mbogning Raoul
         panel = new JPanelConfigServer();
         m_panelconfig.add(panel);
         jPanelServer.add(panel.getConfigComponent());
-                
-        panel = new JPanelConfigDatabase();
-        m_panelconfig.add(panel);
-        jPanelDatabase.add(panel.getConfigComponent());
         
         panel = new JPanelConfigGeneral();
         m_panelconfig.add(panel);
@@ -238,18 +238,6 @@ public class JPanelConfiguration extends JPanel implements JPanelView {
         jPanelServer.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jPanelServer.setPreferredSize(new java.awt.Dimension(0, 400));
         jPanelServer.setLayout(new javax.swing.BoxLayout(jPanelServer, javax.swing.BoxLayout.LINE_AXIS));
-
-        javax.swing.GroupLayout jPanelServerLayout = new javax.swing.GroupLayout(jPanelServer);
-        jPanelServer.setLayout(jPanelServerLayout);
-        jPanelServerLayout.setHorizontalGroup(
-            jPanelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 735, Short.MAX_VALUE)
-        );
-        jPanelServerLayout.setVerticalGroup(
-            jPanelServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 421, Short.MAX_VALUE)
-        );
-
         jTabbedPane1.addTab("Server Setup", jPanelServer);
 
         jPanelGeneral.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N

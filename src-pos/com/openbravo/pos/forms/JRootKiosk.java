@@ -19,6 +19,7 @@
 
 package com.openbravo.pos.forms;
 
+import cm.wandapos.webservices.apache.tomcat.TomcatEmbeddedServer;
 import com.openbravo.pos.config.JFrmConfig;
 import com.openbravo.pos.instance.AppMessage;
 import com.openbravo.pos.instance.InstanceManager;
@@ -40,7 +41,8 @@ public class JRootKiosk extends javax.swing.JFrame implements AppMessage {
     
     private JRootApp m_rootapp;
     private AppProperties m_props;
-    private OSValidator m_OS;    
+    private OSValidator m_OS;
+    private TomcatEmbeddedServer m_tomcatServer;
     
     /** Creates new form JRootKiosk */
     public JRootKiosk() {
@@ -72,7 +74,7 @@ public class JRootKiosk extends javax.swing.JFrame implements AppMessage {
                 } catch (RemoteException | AlreadyBoundException e) {
                 }
             }
-        
+            
             // Show the application
             add(m_rootapp, BorderLayout.CENTER);            
     

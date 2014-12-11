@@ -1,9 +1,21 @@
 package cm.wandapos.webservices.fields;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+//@XmlType(name = "", propOrder = {"val"})
+@XmlRootElement(name = "field")
 public class DataField {
 
+    @XmlElement(name = "val", required = true)
     private String m_value;
+    
+    @XmlAttribute(name = "columnName", required = true)
     private String m_columnName;
 
     public DataField() {

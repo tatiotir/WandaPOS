@@ -8,13 +8,18 @@ package cm.wandapos.webservices.fields;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author TATIOTI-IDEAPAD
+ * @author Ing. Tatioti Mbogning Raoul
  */
+
+@XmlRootElement(name = "DataSet")
 public class DataSet {
     
+    @XmlElement(name = "DataRow")
     private List<DataRow> m_dataRows;
     
     public DataSet() {
