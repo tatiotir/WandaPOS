@@ -9,7 +9,7 @@
 //    the Free Software Foundation, either version 3 of the License, or
 //    (at your option) any later version.
 //
-//   Wanda POS is distributed in the hope that it will be useful,
+//    Wanda POS is distributed in the hope that it will be useful,
 //    but WITHOUT ANY WARRANTY; without even the implied warranty of
 //    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //    GNU General Public License for more details.
@@ -19,27 +19,28 @@
 
 package cm.wandapos.webservices.data;
 
-import cm.wandapos.webservices.model.LoginRequest;
-import com.openbravo.pos.forms.AppView;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author ing. Tatioti Mbogning Raoul
+ * @author Ing. Tatioti Mbogning Raoul
  */
-public abstract class AbstractWebService {
 
-    private AppView m_appView;
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "StandardResponseDocument")
+public class StandardResponseDocument {
     
-    public AbstractWebService(AppView app) {
-        this.m_appView = app;
-    }
-    
-    protected String login(LoginRequest loginRequest, String webService, String method, String serviceType) {
-        return "";
+    @XmlElement(name = "recordID", required = true)
+    private String m_recordID;
+
+    public String getRecordID() {
+        return m_recordID;
     }
 
-    protected String authenticate(String webServiceValue, String methodValue, String serviceTypeValue) {
-        return "";
+    public void setRecordID(String recordID) {
+        this.m_recordID = recordID;
     }
-
 }

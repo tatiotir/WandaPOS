@@ -1,8 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+//    Wanda POS - Africa's Gift to the World
+//    Copyright (c) 2014-2015 IT-Kamer & previous Unicenta POS and Openbravo POS works
+//    www.erp-university-africa.com
+//
+//    This file is part of Wanda POS
+//
+//    Wanda POS is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//   Wanda POS is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License
+//    along with Wanda POS.  If not, see <http://www.gnu.org/licenses/>.
 
 package cm.wandapos.webservices.data;
 
@@ -44,23 +57,31 @@ public class DatabaseDocument {
         return m_numRows;
     }
 
-    public void setNumRows(int m_numRows) {
-        this.m_numRows = m_numRows;
+    public void setNumRows(int numRows) {
+        this.m_numRows = numRows;
     }
 
     public int getTotalRows() {
         return m_totalRows;
     }
 
-    public void setTotalRows(int m_totalRows) {
-        this.m_totalRows = m_totalRows;
+    public void setTotalRows(int totalRows) {
+        this.m_totalRows = totalRows;
     }
 
-    public int getM_startRow() {
+    public int getStartRow() {
         return m_startRow;
     }
 
-    public void setStartRow(int m_startRow) {
-        this.m_startRow = m_startRow;
+    public void setStartRow(int startRow) {
+        this.m_startRow = startRow;
+    }
+    
+    public DataSet getDataSet() {
+        return m_dataSet;
+    }
+
+    public void setDataSet(DataSet dataSet) {
+        this.m_dataSet = dataSet;
     }
 }
