@@ -25,12 +25,19 @@ package cm.wandapos.webservices.model;
  */
 public class MWebService {
     
+    private String m_id;
     private String m_name;
     private String m_value;
     private String m_description;
     private String m_help;
     
-    public MWebService(String name, String value, String description, String help) {
+    public MWebService(String id, String value) {
+        this.m_id = id;
+        this.m_value = value;
+    }
+    
+    public MWebService(String id, String name, String value, String description, String help) {
+        this.m_id = id;
         this.m_name = name;
         this.m_value = value;
         this.m_description = description;
@@ -67,5 +74,13 @@ public class MWebService {
 
     public void setHelp(String help) {
         this.m_help = help;
+    }
+    
+    public String getId() {
+        return this.m_id;
+    }
+    
+    public void setId(String id) {
+        this.m_id = id;
     }
 }

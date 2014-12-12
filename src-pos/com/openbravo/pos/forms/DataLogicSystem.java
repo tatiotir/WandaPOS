@@ -471,6 +471,10 @@ public class DataLogicSystem extends BeanFactoryDataSingle {
 
         resetResourcesCache();
     }
+    
+    public AppUser getAppUser(String username, String password) throws BasicException {
+        return (AppUser) m_peopleByNamePassword.find(username, password);
+    }
 
     /**
      *

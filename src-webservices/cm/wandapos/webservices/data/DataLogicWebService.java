@@ -19,9 +19,10 @@
 
 package cm.wandapos.webservices.data;
 
-import cm.wandapos.webservices.model.MWebServiceMethod;
 import cm.wandapos.webservices.model.MWebService;
+import cm.wandapos.webservices.model.MWebServiceMethod;
 import cm.wandapos.webservices.model.MWebServicePara;
+import cm.wandapos.webservices.model.MWebServiceType;
 import com.openbravo.basic.BasicException;
 import com.openbravo.data.loader.DataRead;
 import com.openbravo.data.loader.Datas;
@@ -51,6 +52,8 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
     private SentenceFind m_webServiceParamaterByName;
     private SentenceFind m_webServiceInputColumnNames;
     private SentenceFind m_webServiceOutputColumnNames;
+    private SentenceList m_webServiceTypes;
+    private SentenceFind m_webServiceTypeByValue;
     
     // SerializerRead to Read Web Service Methods
     private SerializerRead webServiceMethodRead;
@@ -60,6 +63,9 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
     
     // SerializerRead to Read Web Service Type Paramaters
     private SerializerRead webServiceParamaterRead;
+    
+    // SerializerREad to Read Web Service Type
+    private SerializerRead webServiceTypeRead;
     
     
     @Override
@@ -84,11 +90,21 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
             public Object readValues(DataRead dr) throws BasicException {
                 return new MWebService(
                 dr.getString(0),
+                dr.getString(1));
+            }
+        }; 
+        
+        webServiceTypeRead = new SerializerRead() {
+
+            @Override
+            public Object readValues(DataRead dr) throws BasicException {
+                return new MWebServiceType(
+                dr.getString(0),
                 dr.getString(1),
                 dr.getString(2),
                 dr.getString(3));
             }
-        }; 
+        };
         
         webServiceParamaterRead = new SerializerRead() {
 
@@ -102,16 +118,19 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
             }
         };
         
+        m_webServiceTypes = new PreparedSentence(s, "SELECT ID, NAME, VALUE, TABLEID FROM WEBSERVICETYPE", null, webServiceTypeRead);
+        
+        m_webServiceTypeByValue = new PreparedSentence(s, "SELECT ID, NAME, VALUE, TABLEID FROM WEBSERVICETYPE WHERE VALUE = ?", null, webServiceTypeRead);
+        
         m_webServiceMethods = new PreparedSentence(s, "SELECT WEBSERVICEID, NAME, VALUE, DESCRIPTION, HELP FROM WEBSERVICEMETHOD WHERE WEBSERVICEID = ? ORDER BY VALUE", 
                 SerializerWriteString.INSTANCE, webServiceMethodRead);
         
         m_webServiceMethodByValue = new PreparedSentence(s, "SELECT WEBSERVICEID, NAME, VALUE, DESCRIPTION, HELP FROM WEBSERVICEMETHOD WHERE WEBSERVICEID = ? AND VALUE = ?", 
                 new SerializerWriteBasic(new Datas[]{Datas.STRING, Datas.STRING}), webServiceMethodRead);
         
-        m_webServices = new StaticSentence(s, "SELECT NAME, VALUE, DESCRIPTION, HELP FROM WEBSERVICE", 
-                null, webServiceRead);
+        m_webServices = new StaticSentence(s, "SELECT ID, VALUE FROM WEBSERVICE", null, webServiceRead);
         
-        m_webServiceByValue = new PreparedSentence(s, "SELECT NAME, VALUE, DESCRIPTION, HELP FROM WEBSERVICE WHERE VALUE = ?", 
+        m_webServiceByValue = new PreparedSentence(s, "SELECT ID, VALUE FROM WEBSERVICE WHERE VALUE = ?", 
                 new SerializerWriteBasic(new Datas[]{Datas.STRING}), webServiceRead);
         
         m_webServiceParamaters = new PreparedSentence(s, "SELECT WEBSERVICETYPEID, NAME, TYPE, CONSTANT_VALUE FROM WEBSERVICEPARA WHERE WEBSERVICETYPEID = ? ORDER BY NAME", 
@@ -149,5 +168,13 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
     
     public MWebServicePara getParamater(String webServiceTypeID, String paramaterName) throws BasicException {
         return (MWebServicePara)m_webServiceParamaterByName.find(webServiceTypeID, paramaterName);
+    }
+    
+    public List getWebServiceTypes() throws BasicException {
+        return m_webServiceTypes.list();
+    }
+    
+    public MWebServiceType getWebServiceType(String serviceTypeValue) throws BasicException {
+        return (MWebServiceType)m_webServiceTypeByValue.find(serviceTypeValue);
     }
 }

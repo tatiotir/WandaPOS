@@ -25,12 +25,21 @@ package cm.wandapos.webservices.model;
  */
 public class MWebServiceType {
     
+    private String m_id;
     private String name;
     private String value;
     private String help;
     private String tableID;
 
-    public MWebServiceType(String name, String value, String help, String tableID) {
+    public MWebServiceType(String id, String name, String value, String tableID) {
+        this.m_id = id;
+        this.name = name;
+        this.value = value;
+        this.tableID = tableID;
+    }
+    
+    public MWebServiceType(String id, String name, String value, String help, String tableID) {
+        this.m_id = id;
         this.name = name;
         this.value = value;
         this.help = help;
@@ -67,5 +76,13 @@ public class MWebServiceType {
 
     public void setTableID(String tableID) {
         this.tableID = tableID;
+    }
+    
+    public String getId() {
+        return this.m_id;
+    }
+    
+    public void setId(String id) {
+        this.m_id = id;
     }
 }
