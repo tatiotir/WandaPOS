@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractWebService {
 
-    private final AppView m_appView;
+    protected final AppView m_appView;
     
     public AbstractWebService(AppView app) {
         this.m_appView = app;

@@ -38,22 +38,57 @@ import javax.jws.WebService;
 @WebService(endpointInterface = "cm.wandapos.webservices.interfaces.IModelWebService")
 public class ModelWebService extends AbstractWebService implements IModelWebService {
 
+    private final String m_webServiceName = new String("ModelWebService");
+    
     public ModelWebService(AppView app) {
         super(app);
     }
 
     @Override
     public DatabaseDocument readData(ModelCRUDRequest request) {
-        return new DatabaseDocumentError();
+        
+        /** 
+         * Login
+         * Return an error message if there is an error
+         * Return null if there is no errors 
+         */
+        String error = login(request.getLoginRequest(), m_webServiceName, "readData", request.getModelCRUD().getServiceType());
+        if (error != null)
+            return new DatabaseDocumentError(error);
+        
+        // Read data
+        return new DatabaseDocument();
     }
 
     @Override
     public DatabaseDocument queryData(ModelCRUDRequest request) {
+        
+        /** 
+         * Login
+         * Return an error message if there is an error
+         * Return null if there is no errors 
+         */
+        String error = login(request.getLoginRequest(), m_webServiceName, "queryData", request.getModelCRUD().getServiceType());
+        if (error != null)
+            return new DatabaseDocumentError(error);
+        
+        // Query data
         return new DatabaseDocument();
     }
 
     @Override
     public StandardResponseDocument createData(ModelCRUDRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        /** 
+         * Login
+         * Return an error message if there is an error
+         * Return null if there is no errors 
+         */
+        String error = login(request.getLoginRequest(), m_webServiceName, "createData", request.getModelCRUD().getServiceType());
+        if (error != null)
+            return new StandardResponseError(error);
+        
+        // Create data
+        return new StandardResponseDocument();
     }   
 }

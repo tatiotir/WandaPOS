@@ -29,6 +29,10 @@ public class DatabaseDocumentError extends DatabaseDocument implements IResponse
         this.m_error = new String();
     }
     
+    public DatabaseDocumentError(String error) {
+        this.m_error = error;
+    }
+    
     @Override
     public void setError(String error) {
         this.m_error = error;
