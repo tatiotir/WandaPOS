@@ -36,11 +36,22 @@ public class StandardResponseDocument {
     @XmlElement(name = "recordID", required = true)
     private String m_recordID;
 
+    @XmlElement(name = "Error")
+    private String m_error;
+    
     public String getRecordID() {
         return m_recordID;
     }
 
     public void setRecordID(String recordID) {
         this.m_recordID = recordID;
+    }
+    
+    public void setError(String error) {
+        this.m_error = error;
+    }
+
+    public String getError() {
+        return m_error;
     }
 }

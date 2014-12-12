@@ -396,7 +396,7 @@ public class DataLogicSystem extends BeanFactoryDataSingle {
             m_peoplevisible = new StaticSentence(s, "SELECT ID, NAME, APPPASSWORD, CARD, ROLE, IMAGE FROM PEOPLE WHERE VISIBLE = " + s.DB.TRUE() + " ORDER BY NAME", null, peopleread);
 
             // Added by Ing. Tatioti Mbogning Raoul
-            m_peopleByNamePassword = new PreparedSentence(s, "SELECT ID, NAME, APPPASSWORD, CARD, ROLE, IMAGE FROM PEOPLE WHERE NAME = ? AND APPPASSWORD = ?", SerializerWriteString.INSTANCE, peopleread);
+            m_peopleByNamePassword = new PreparedSentence(s, "SELECT ID, NAME, APPPASSWORD, CARD, ROLE, IMAGE FROM PEOPLE WHERE NAME = ? AND APPPASSWORD = ?", new SerializerWriteBasic(new Datas[]{Datas.STRING, Datas.STRING}), peopleread);
             
             m_peoplebycard = new PreparedSentence(s, "SELECT ID, NAME, APPPASSWORD, CARD, ROLE, IMAGE FROM PEOPLE WHERE CARD = ? AND VISIBLE = " + s.DB.TRUE(), SerializerWriteString.INSTANCE, peopleread);
 
@@ -472,7 +472,7 @@ public class DataLogicSystem extends BeanFactoryDataSingle {
         resetResourcesCache();
     }
     
-    public AppUser getAppUser(String username, String password) throws BasicException {
+    public final AppUser getAppUser(String username, String password) throws BasicException {
         return (AppUser) m_peopleByNamePassword.find(username, password);
     }
 

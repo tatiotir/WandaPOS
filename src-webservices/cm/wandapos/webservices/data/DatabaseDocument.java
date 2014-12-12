@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -35,23 +36,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "DatabaseDocument")
 public class DatabaseDocument {
     
-    @XmlElement(name = "DataSet", required = true)
+    @XmlElement(name = "DataSet")
     private DataSet m_dataSet;
     
-    @XmlAttribute(name = "numRows", required = true)
+    @XmlAttribute(name = "numRows")
     private int m_numRows;
     
-    @XmlAttribute(name = "totalRows", required = true)
+    @XmlAttribute(name = "totalRows")
     private int m_totalRows;
     
-    @XmlAttribute(name = "startRow", required = true) 
+    @XmlAttribute(name = "startRow") 
     private int m_startRow;
     
-    public DatabaseDocument() {
-        this.m_numRows = -1;
-        this.m_totalRows = -1;
-        this.m_startRow = -1;
-    }
+    @XmlElement(name = "Error")
+    private String m_error;
     
     public int getNumRows() {
         return m_numRows;
@@ -83,5 +81,13 @@ public class DatabaseDocument {
 
     public void setDataSet(DataSet dataSet) {
         this.m_dataSet = dataSet;
+    }
+    
+    public void setError(String error) {
+        this.m_error = error;
+    }
+
+    public String getError() {
+        return m_error;
     }
 }

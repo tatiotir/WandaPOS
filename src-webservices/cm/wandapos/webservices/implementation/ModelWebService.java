@@ -47,48 +47,58 @@ public class ModelWebService extends AbstractWebService implements IModelWebServ
     @Override
     public DatabaseDocument readData(ModelCRUDRequest request) {
         
+        DatabaseDocument responseDocument = new DatabaseDocument();
         /** 
          * Login
          * Return an error message if there is an error
          * Return null if there is no errors 
          */
         String error = login(request.getLoginRequest(), m_webServiceName, "readData", request.getModelCRUD().getServiceType());
-        if (error != null)
-            return new DatabaseDocumentError(error);
+        if ((error != null) && error.length() > 0) {
+            responseDocument.setError(error);
+            return responseDocument;
+        }
+        
         
         // Read data
-        return new DatabaseDocument();
+        return responseDocument;
     }
 
     @Override
     public DatabaseDocument queryData(ModelCRUDRequest request) {
         
+        DatabaseDocument responseDocument = new DatabaseDocument();
         /** 
          * Login
          * Return an error message if there is an error
          * Return null if there is no errors 
          */
-        String error = login(request.getLoginRequest(), m_webServiceName, "queryData", request.getModelCRUD().getServiceType());
-        if (error != null)
-            return new DatabaseDocumentError(error);
+        String error = login(request.getLoginRequest(), m_webServiceName, "readData", request.getModelCRUD().getServiceType());
+        if ((error != null) && error.length() > 0) {
+            responseDocument.setError(error);
+            return responseDocument;
+        }
         
         // Query data
-        return new DatabaseDocument();
+        return responseDocument;
     }
 
     @Override
     public StandardResponseDocument createData(ModelCRUDRequest request) {
         
+        StandardResponseDocument responseDocument = new StandardResponseDocument();
         /** 
          * Login
          * Return an error message if there is an error
          * Return null if there is no errors 
          */
-        String error = login(request.getLoginRequest(), m_webServiceName, "createData", request.getModelCRUD().getServiceType());
-        if (error != null)
-            return new StandardResponseError(error);
+        String error = login(request.getLoginRequest(), m_webServiceName, "readData", request.getModelCRUD().getServiceType());
+        if ((error != null) && error.length() > 0) {
+            responseDocument.setError(error);
+            return responseDocument;
+        }
         
         // Create data
-        return new StandardResponseDocument();
+        return responseDocument;
     }   
 }

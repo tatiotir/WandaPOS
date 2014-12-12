@@ -45,11 +45,12 @@ public abstract class AbstractWebService {
     protected String login(LoginRequest loginRequest, String webService, String method, String serviceType) {
         DataLogicSystem dataLogicSystem = (DataLogicSystem)m_appView.getBean("com.openbravo.pos.forms.DataLogicSystem");
         
-        // this
-        // Try to authenticate the user
+        // Try to login the user
+        AppUser appUser = null;
         try {
-            AppUser appUser = dataLogicSystem.getAppUser(loginRequest.getUser(), loginRequest.getPass());
-            if (!appUser.authenticate())
+            appUser = dataLogicSystem.getAppUser(loginRequest.getUser(), loginRequest.getPass());
+            
+            if ((appUser == null) || !appUser.authenticate())
                 return "Error during the login of the user : " + loginRequest.getUser();
         } catch (BasicException ex) {
             return "Error during the login of this user : " + loginRequest.getUser();
