@@ -20,6 +20,8 @@
 package com.openbravo.data.loader;
 
 import com.openbravo.basic.BasicException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -33,6 +35,19 @@ public class SerializerReadBasic implements SerializerRead {
      * @param classes */
     public SerializerReadBasic(Datas[] classes) {
         m_classes = classes;
+    }
+    
+    public SerializerReadBasic() {
+        
+    }
+    
+    public void addClasse(Datas dataClass) {
+        ArrayList list = new ArrayList<>();
+        if (m_classes.length != 0)
+            list.addAll(Arrays.asList(m_classes));
+        
+        list.add(dataClass);
+        m_classes = (Datas[]) list.toArray();
     }
     
     /**

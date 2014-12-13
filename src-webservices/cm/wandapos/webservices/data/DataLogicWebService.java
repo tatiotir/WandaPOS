@@ -50,10 +50,11 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
     private SentenceFind m_webServiceMethodByValue;
     private SentenceList m_webServiceParamaters;
     private SentenceFind m_webServiceParamaterByName;
-    private SentenceFind m_webServiceInputColumnNames;
-    private SentenceFind m_webServiceOutputColumnNames;
+    private SentenceList m_webServiceInputColumnNames;
+    private SentenceList m_webServiceOutputColumnNames;
     private SentenceList m_webServiceTypes;
     private SentenceFind m_webServiceTypeByValue;
+    private SentenceFind m_tableName;
     
     // SerializerRead to Read Web Service Methods
     private SerializerRead webServiceMethodRead;
@@ -122,6 +123,8 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
         
         m_webServiceTypeByValue = new PreparedSentence(s, "SELECT ID, NAME, VALUE, TABLEID FROM WEBSERVICETYPE WHERE VALUE = ?", null, webServiceTypeRead);
         
+        m_tableName = new PreparedSentence(s, "SELECT VALUE FROM TABLE WHERE VALUE = ?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING}));
+        
         m_webServiceMethods = new PreparedSentence(s, "SELECT WEBSERVICEID, NAME, VALUE, DESCRIPTION, HELP FROM WEBSERVICEMETHOD WHERE WEBSERVICEID = ? ORDER BY VALUE", 
                 SerializerWriteString.INSTANCE, webServiceMethodRead);
         
@@ -142,39 +145,52 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
         m_webServiceInputColumnNames = new PreparedSentence(s, "SELECT C.NAME FROM WEBSERVICEFIELDINPUT F, COLUMN C WHERE F.WEBSERVICETYPEID = ? AND C.ID = F.ID ORDER BY C.NAME",
         SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING}));
         
-        m_webServiceInputColumnNames = new PreparedSentence(s, "SELECT C.NAME FROM WEBSERVICEFIELDOUPUT F, COLUMN C WHERE F.WEBSERVICETYPEID = ? AND C.ID = F.ID ORDER BY C.NAME",
+        m_webServiceOutputColumnNames = new PreparedSentence(s, "SELECT C.NAME FROM WEBSERVICEFIELDOUPUT F, COLUMN C WHERE F.WEBSERVICETYPEID = ? AND C.ID = F.ID ORDER BY C.NAME",
         SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING}));
     }
     
-    public List getWebServices() throws BasicException {
+    public final List getInputColumnNames(String webServiceTypeID) throws BasicException {
+        return m_webServiceInputColumnNames.list(webServiceTypeID);
+    }
+    
+    public final List getOutputColumnNames(String webServiceTypeID) throws BasicException {
+        return m_webServiceOutputColumnNames.list(webServiceTypeID);
+    }
+    
+    public final List getWebServices() throws BasicException {
         return m_webServices.list();
     }
     
-    public MWebService getWebService(String webServiceValue) throws BasicException {
+    public final MWebService getWebService(String webServiceValue) throws BasicException {
         return (MWebService)m_webServiceByValue.find(webServiceValue);
     }
     
-    public List getMethods(String webServiceID) throws BasicException {
+    public final List getMethods(String webServiceID) throws BasicException {
         return m_webServiceMethods.list(webServiceID);
     }
     
-    public MWebServiceMethod getMethod(String webServiceID, String methodValue) throws BasicException {
+    public final MWebServiceMethod getMethod(String webServiceID, String methodValue) throws BasicException {
         return (MWebServiceMethod)m_webServiceMethodByValue.find(webServiceID, methodValue);
     }
     
-    public List getParamaters(String webServiceTypeID) throws BasicException {
+    public final List getParamaters(String webServiceTypeID) throws BasicException {
         return m_webServiceParamaters.list(webServiceTypeID);
     }
     
-    public MWebServicePara getParamater(String webServiceTypeID, String paramaterName) throws BasicException {
+    public final MWebServicePara getParamater(String webServiceTypeID, String paramaterName) throws BasicException {
         return (MWebServicePara)m_webServiceParamaterByName.find(webServiceTypeID, paramaterName);
     }
     
-    public List getWebServiceTypes() throws BasicException {
+    public final List getWebServiceTypes() throws BasicException {
         return m_webServiceTypes.list();
     }
     
-    public MWebServiceType getWebServiceType(String serviceTypeValue) throws BasicException {
+    public final MWebServiceType getWebServiceType(String serviceTypeValue) throws BasicException {
         return (MWebServiceType)m_webServiceTypeByValue.find(serviceTypeValue);
+    }
+    
+    public final List<Object[]> getDatas(Session session, String sql, SerializerWriteBasic serializerWrite, SerializerReadBasic serializerRead, 
+            Object... params) throws BasicException {
+        return new PreparedSentence(session, sql, serializerWrite, serializerRead).list(params);
     }
 }

@@ -25,6 +25,10 @@ package cm.wandapos.webservices.model;
  */
 public class MWebServicePara {
     
+    public static final String PARA_TABLENAME = "TableName";
+    public static final String PARA_RECORDID = "RecordID";
+    public static final String PARA_ACTION = "Action";
+    
     private String name;
     private String type;
     private String constantValue;

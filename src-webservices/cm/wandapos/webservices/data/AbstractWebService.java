@@ -37,18 +37,23 @@ import java.util.logging.Logger;
 public abstract class AbstractWebService {
 
     protected final AppView m_appView;
+    protected DataLogicWebService m_dlWebService;
+    protected DataLogicSystem m_dlSystem;
+    
     
     public AbstractWebService(AppView app) {
         this.m_appView = app;
+        m_dlWebService = (DataLogicWebService) m_appView.getBean("com.openbravo.pos.forms.DataLogicWebService");
+        m_dlSystem = (DataLogicSystem)m_appView.getBean("com.openbravo.pos.forms.DataLogicSystem");
     }
     
     protected String login(LoginRequest loginRequest, String webService, String method, String serviceType) {
-        DataLogicSystem dataLogicSystem = (DataLogicSystem)m_appView.getBean("com.openbravo.pos.forms.DataLogicSystem");
+        m_dlSystem = (DataLogicSystem)m_appView.getBean("com.openbravo.pos.forms.DataLogicSystem");
         
         // Try to login the user
         AppUser appUser = null;
         try {
-            appUser = dataLogicSystem.getAppUser(loginRequest.getUser(), loginRequest.getPass());
+            appUser = m_dlSystem.getAppUser(loginRequest.getUser(), loginRequest.getPass());
             
             if ((appUser == null) || !appUser.authenticate())
                 return "Error during the login of the user : " + loginRequest.getUser();
@@ -59,12 +64,12 @@ public abstract class AbstractWebService {
     }
 
     protected String authenticate(String webServiceValue, String methodValue, String serviceTypeValue) {
-        DataLogicWebService dataLogicWebService = (DataLogicWebService)m_appView.getBean("com.openbravo.pos.forms.DataLogicWebService");
+        m_dlWebService = (DataLogicWebService)m_appView.getBean("com.openbravo.pos.forms.DataLogicWebService");
         
         // Get the web service (ModelWebService)
         MWebService webService = null;
         try {
-            webService = dataLogicWebService.getWebService(webServiceValue);
+            webService = m_dlWebService.getWebService(webServiceValue);
             
             if ((webService == null))
                 return "Web service " + webServiceValue + " not registered";
@@ -77,7 +82,7 @@ public abstract class AbstractWebService {
         // Get the web service method
         MWebServiceMethod webServiceMethod = null;
         try {
-            webServiceMethod = dataLogicWebService.getMethod(webService.getId(), methodValue);
+            webServiceMethod = m_dlWebService.getMethod(webService.getId(), methodValue);
             
             if (webServiceMethod == null) 
                 return "Method " + methodValue + " not registered";
@@ -91,7 +96,7 @@ public abstract class AbstractWebService {
         // Get the web service type
         MWebServiceType webServiceType = null;
         try {
-            webServiceType = dataLogicWebService.getWebServiceType(serviceTypeValue);
+            webServiceType = m_dlWebService.getWebServiceType(serviceTypeValue);
             
             if (webServiceType == null) 
                 return "Service type " + serviceTypeValue + " not configured";
