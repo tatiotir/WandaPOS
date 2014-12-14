@@ -50,11 +50,11 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
     private SentenceFind m_webServiceMethodByValue;
     private SentenceList m_webServiceParamaters;
     private SentenceFind m_webServiceParamaterByName;
-    private SentenceList m_webServiceInputColumnNames;
-    private SentenceList m_webServiceOutputColumnNames;
+    private SentenceList m_webServiceInputFields;
+    private SentenceList m_webServiceOutputFields;
     private SentenceList m_webServiceTypes;
     private SentenceFind m_webServiceTypeByValue;
-    private SentenceFind m_tableName;
+    private SentenceFind m_referenceByID;
     
     // SerializerRead to Read Web Service Methods
     private SerializerRead webServiceMethodRead;
@@ -123,7 +123,7 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
         
         m_webServiceTypeByValue = new PreparedSentence(s, "SELECT ID, NAME, VALUE, TABLEID FROM WEBSERVICETYPE WHERE VALUE = ?", null, webServiceTypeRead);
         
-        m_tableName = new PreparedSentence(s, "SELECT VALUE FROM TABLE WHERE VALUE = ?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING}));
+        m_referenceByID = new PreparedSentence(s, "SELECT NAME FROM REFERENCE WHERE ID = ?", SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING}));
         
         m_webServiceMethods = new PreparedSentence(s, "SELECT WEBSERVICEID, NAME, VALUE, DESCRIPTION, HELP FROM WEBSERVICEMETHOD WHERE WEBSERVICEID = ? ORDER BY VALUE", 
                 SerializerWriteString.INSTANCE, webServiceMethodRead);
@@ -142,19 +142,19 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
         m_webServiceParamaterByName = new PreparedSentence(s, "SELECT WEBSERVICETYPEID, NAME, TYPE, CONSTANT_VALUE FROM WEBSERVICEPARA WHERE WEBSERVICETYPEID = ? AND NAME = ?", 
                 new SerializerWriteBasic(new Datas[]{Datas.STRING, Datas.STRING}), webServiceParamaterRead); 
         
-        m_webServiceInputColumnNames = new PreparedSentence(s, "SELECT C.NAME FROM WEBSERVICEFIELDINPUT F, COLUMN C WHERE F.WEBSERVICETYPEID = ? AND C.ID = F.ID ORDER BY C.NAME",
-        SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING}));
+        m_webServiceInputFields = new PreparedSentence(s, "SELECT C.NAME, F.REFERENCEID FROM WEBSERVICEFIELDINPUT F, COLUMN C WHERE F.WEBSERVICETYPEID = ? AND C.ID = F.ID ORDER BY C.NAME",
+        SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING, Datas.STRING}));
         
-        m_webServiceOutputColumnNames = new PreparedSentence(s, "SELECT C.NAME FROM WEBSERVICEFIELDOUPUT F, COLUMN C WHERE F.WEBSERVICETYPEID = ? AND C.ID = F.ID ORDER BY C.NAME",
+        m_webServiceOutputFields = new PreparedSentence(s, "SELECT C.NAME FROM WEBSERVICEFIELDOUPUT F, COLUMN C WHERE F.WEBSERVICETYPEID = ? AND C.ID = F.ID ORDER BY C.NAME",
         SerializerWriteString.INSTANCE, new SerializerReadBasic(new Datas[]{Datas.STRING}));
     }
     
-    public final List getInputColumnNames(String webServiceTypeID) throws BasicException {
-        return m_webServiceInputColumnNames.list(webServiceTypeID);
+    public final List<String[]> getInputFields(String webServiceTypeID) throws BasicException {
+        return m_webServiceInputFields.list(webServiceTypeID);
     }
     
-    public final List getOutputColumnNames(String webServiceTypeID) throws BasicException {
-        return m_webServiceOutputColumnNames.list(webServiceTypeID);
+    public final List<String> getOutputFields(String webServiceTypeID) throws BasicException {
+        return m_webServiceOutputFields.list(webServiceTypeID);
     }
     
     public final List getWebServices() throws BasicException {
@@ -192,5 +192,13 @@ public class DataLogicWebService extends BeanFactoryDataSingle {
     public final List<Object[]> getDatas(Session session, String sql, SerializerWriteBasic serializerWrite, SerializerReadBasic serializerRead, 
             Object... params) throws BasicException {
         return new PreparedSentence(session, sql, serializerWrite, serializerRead).list(params);
+    }
+    
+    public final List<Object[]> getDatas(Session session, String sql, SerializerReadBasic serializerRead) throws BasicException {
+        return new PreparedSentence(session, sql, null, serializerRead).list();
+    }
+    
+    public final String getReferenceByID(String referenceID) throws BasicException {
+        return (String)m_referenceByID.find(referenceID);
     }
 }

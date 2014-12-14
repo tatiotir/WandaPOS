@@ -19,14 +19,12 @@
 package cm.wandapos.webservices.implementation;
 
 import cm.wandapos.webservices.data.AbstractWebService;
-import cm.wandapos.webservices.data.DataLogicWebService;
 import cm.wandapos.webservices.data.DatabaseDocument;
 import cm.wandapos.webservices.data.StandardResponseDocument;
 import cm.wandapos.webservices.fields.DataField;
 import cm.wandapos.webservices.fields.DataRow;
 import cm.wandapos.webservices.fields.DataSet;
 import cm.wandapos.webservices.interfaces.IModelWebService;
-import cm.wandapos.webservices.model.LoginRequest;
 import cm.wandapos.webservices.model.MWebServicePara;
 import cm.wandapos.webservices.model.MWebServiceType;
 import cm.wandapos.webservices.model.ModelCRUD;
@@ -36,13 +34,12 @@ import com.openbravo.data.loader.Datas;
 import com.openbravo.data.loader.SerializerReadBasic;
 import com.openbravo.data.loader.SerializerWriteBasic;
 import com.openbravo.pos.forms.AppView;
-import com.openbravo.pos.forms.DataLogicSystem;
 import com.truemesh.squiggle.SelectQuery;
 import com.truemesh.squiggle.Table;
 import com.truemesh.squiggle.criteria.MatchCriteria;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jws.WebService;
 
 /**
@@ -73,51 +70,52 @@ public class ModelWebService extends AbstractWebService implements IModelWebServ
                 return responseDocument;
             }
             
+            MWebServiceType webServiceType = m_dlWebService.getWebServiceType(request.getModelCRUD().getServiceType());
+
             // Validate web service type parameters
-            error = validateParameters(request.getModelCRUD());
+            error = validateParameters(request.getModelCRUD(), webServiceType);
             if ((error != null) && error.length() > 0) {
                 responseDocument.setError(error);
                 return responseDocument;
             }
-            
-            MWebServiceType webServiceType = m_dlWebService.getWebServiceType(request.getModelCRUD().getServiceType());
-            List outputColumnNames = m_dlWebService.getOutputColumnNames(webServiceType.getId());
-            
+
+            List<String> outputFields = m_dlWebService.getOutputFields(webServiceType.getId());
+
             // Contruct SQL Query
             SelectQuery query = new SelectQuery();
             Table table = new Table(request.getModelCRUD().getTableName());
-            
-            // Add Column and construc SerializerRead
+
+            // Add output fields and construct SerializerRead
             SerializerReadBasic serializerRead = new SerializerReadBasic();
-            for (Object column : outputColumnNames) {
-                query.addColumn(table, (String) column);
+            for (String column : outputFields) {
+                query.addColumn(table, column);
                 serializerRead.addClasse(Datas.OBJECT);
             }
-            
+
             // Add where clause
             query.addCriteria(new MatchCriteria(table, "ID", MatchCriteria.EQUALS, "?"));
-            
-            List<Object[]> listDatas = m_dlWebService.getDatas(m_appView.getSession(), query.toString(), new SerializerWriteBasic(new Datas[]{Datas.STRING}), 
+
+            List<Object[]> listDatas = m_dlWebService.getDatas(m_appView.getSession(), query.toString(), new SerializerWriteBasic(new Datas[]{Datas.STRING}),
                     serializerRead, request.getModelCRUD().getRecordID());
-            
+
             // Construct the DataSet
             DataSet dataSet = new DataSet();
             for (Object[] data : listDatas) {
                 DataRow dataRow = new DataRow();
                 for (int i = 0; i < data.length; ++i) {
                     DataField dataField = new DataField();
-                    dataField.setColumnName((String)outputColumnNames.get(i));
+                    dataField.setColumnName(outputFields.get(i));
                     dataField.setValue((String) data[i]);
                     dataRow.addDataField(dataField);
                 }
                 dataSet.addDataRow(dataRow);
             }
-            
+
             responseDocument.setStartRow(1);
             responseDocument.setNumRows(listDatas.size());
             responseDocument.setTotalRows(listDatas.size());
             responseDocument.setDataSet(dataSet);
-            
+
         } catch (BasicException ex) {
             DatabaseDocument errorDocument = new DatabaseDocument();
             errorDocument.setError(ex.getMessage());
@@ -130,17 +128,92 @@ public class ModelWebService extends AbstractWebService implements IModelWebServ
     public DatabaseDocument queryData(ModelCRUDRequest request) {
 
         DatabaseDocument responseDocument = new DatabaseDocument();
-        /**
-         * Login Return an error message if there is an error Return null if
-         * there is no errors
-         */
-        String error = login(request.getLoginRequest(), m_webServiceName, "readData", request.getModelCRUD().getServiceType());
-        if ((error != null) && error.length() > 0) {
-            responseDocument.setError(error);
-            return responseDocument;
-        }
+        try {
+            /**
+             * Login Return an error message if there is an error Return null if
+             * there is no errors
+             */
+            String error = login(request.getLoginRequest(), m_webServiceName, "readData", request.getModelCRUD().getServiceType());
+            if ((error != null) && error.length() > 0) {
+                responseDocument.setError(error);
+                return responseDocument;
+            }
 
-        // Query data
+            MWebServiceType webServiceType = m_dlWebService.getWebServiceType(request.getModelCRUD().getServiceType());
+
+            // Validate web service type parameters
+            error = validateParameters(request.getModelCRUD(), webServiceType);
+            if ((error != null) && error.length() > 0) {
+                responseDocument.setError(error);
+                return responseDocument;
+            }
+
+            List<String> outputFields = m_dlWebService.getOutputFields(webServiceType.getId());
+            List<String[]> inputFields = m_dlWebService.getInputFields(webServiceType.getId());
+
+            // Validate input columns
+            if (inputFields != null) {
+                List<String> inputFieldColumns = new ArrayList<>();
+                for (String[] field : inputFields)
+                    inputFieldColumns.add(field[1]);
+                
+                error = validateInputColumns(request.getModelCRUD(), inputFieldColumns);
+                if ((error != null) && error.length() > 0) {
+                    responseDocument.setError(error);
+                    return responseDocument;
+                }
+            }
+            
+            // Contruct SQL Query
+            SelectQuery query = new SelectQuery();
+            Table table = new Table(request.getModelCRUD().getTableName());
+
+            // Add output columns and construct SerializerRead
+            SerializerReadBasic serializerRead = new SerializerReadBasic();
+            for (String column : outputFields) {
+                query.addColumn(table, column);
+                serializerRead.addClasse(Datas.OBJECT);
+            }
+
+            // Add where clause using input fields
+            for (DataField inputField : request.getModelCRUD().getDataRow().getDataFields()) {
+                // Get input column reference
+                String referenceName = m_dlWebService.getReferenceByID(inputField.getColumnName());
+                switch (referenceName) {
+                    case "ID":
+                        query.addCriteria(new MatchCriteria(table, inputField.getColumnName(), MatchCriteria.EQUALS, inputField.getValue()));
+                        break;
+                    case "String":
+                        query.addCriteria(new MatchCriteria(table, inputField.getColumnName(), MatchCriteria.LIKE, inputField.getValue()));
+                        break;
+                }
+            }
+            
+            List<Object[]> listDatas = m_dlWebService.getDatas(m_appView.getSession(), query.toString(), serializerRead);
+
+            // Construct the DataSet
+            DataSet dataSet = new DataSet();
+            for (Object[] data : listDatas) {
+                DataRow dataRow = new DataRow();
+                for (int i = 0; i < data.length; ++i) {
+                    DataField dataField = new DataField();
+                    dataField.setColumnName(outputFields.get(i));
+                    dataField.setValue((String) data[i]);
+                    dataRow.addDataField(dataField);
+                }
+                dataSet.addDataRow(dataRow);
+            }
+
+            responseDocument.setStartRow(1);
+            responseDocument.setNumRows(listDatas.size());
+            responseDocument.setTotalRows(listDatas.size());
+            responseDocument.setDataSet(dataSet);
+
+        } catch (BasicException ex) {
+            DatabaseDocument errorDocument = new DatabaseDocument();
+            errorDocument.setError(ex.getMessage());
+            return errorDocument;
+        }
         return responseDocument;
     }
 
@@ -162,9 +235,8 @@ public class ModelWebService extends AbstractWebService implements IModelWebServ
         return responseDocument;
     }
 
-    private String validateParameters(ModelCRUD modelCRUD) {
+    private String validateParameters(ModelCRUD modelCRUD, MWebServiceType webServiceType) {
         try {
-            MWebServiceType webServiceType = m_dlWebService.getWebServiceType(modelCRUD.getServiceType());
 
             List webServiceParameters = null;
             webServiceParameters = m_dlWebService.getParamaters(webServiceType.getId());
@@ -190,6 +262,25 @@ public class ModelWebService extends AbstractWebService implements IModelWebServ
         } catch (BasicException ex) {
 
         }
+        return null;
+    }
+
+    private String validateInputColumns(ModelCRUD modelCRUD, List<String> inputColumns) {
+        
+        if (modelCRUD.getDataRow().getDataFields().size() != inputColumns.size())
+            return "You request has more input fields than the configured web service";
+        
+        List<String> requestInputColumn = new ArrayList<>();
+        for (DataField dataField : modelCRUD.getDataRow().getDataFields()) {
+            requestInputColumn.add(dataField.getColumnName());
+        }
+        
+        // Sort request input column
+        Collections.sort(requestInputColumn);
+        
+        if (!requestInputColumn.equals(inputColumns))
+            return "The input fields in your request does not correspond to the input field configured in the web service";
+        
         return null;
     }
 }
