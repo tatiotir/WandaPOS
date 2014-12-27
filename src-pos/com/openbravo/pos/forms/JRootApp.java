@@ -380,7 +380,7 @@ public class JRootApp extends JPanel implements AppView {
         showLogin();
 
         // Create and start the Tomcat Server
-        startTomcatServer();
+        // startTomcatServer();
         
         return true;
     }
@@ -773,7 +773,7 @@ public class JRootApp extends JPanel implements AppView {
         if (m_principalapp == null) {
             
             // Stop the Tomcat server before close the app
-            stopTomcatServer();
+            // stopTomcatServer();
             return true;
         } else if (!m_principalapp.deactivate()) {
             return false;
